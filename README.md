@@ -13,5 +13,6 @@
 9. Socket.IO
 10. Cortex
 11. Material Design Icons(MDI)
+12. Speakeasy(MFA/TOTP)
 
 List might be updated later on…
