@@ -5,7 +5,7 @@ export default function Page() {
     <>
       Oceans5 - Battleship clone game
       <div>
-        <a href="./signup">SignUp</a>
+        <a href="/signup">SignUp</a>
       </div>
     </>
   );
