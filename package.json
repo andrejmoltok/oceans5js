@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.3.3",
     "@hapi/iron": "^7.0.1",
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
