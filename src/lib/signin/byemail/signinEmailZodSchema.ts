@@ -2,7 +2,12 @@ import { z } from "zod";
 
 export const signinEmailZodSchema = z
   .object({
-    email: z.string().email("Invalid email format"),
+    email: z
+      .string({
+        required_error: "Email input is required",
+        invalid_type_error: "Invalid email format",
+      })
+      .email(),
     password: z
       .string()
       .min(8, "Provide a password at least 8 characters long"),

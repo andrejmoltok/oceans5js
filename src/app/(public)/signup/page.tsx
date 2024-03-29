@@ -28,6 +28,8 @@ export default function Page() {
     confirm: "",
   });
 
+  const [duplicateEmail, setDuplicateEmail] = React.useState<string>("");
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSignUpData((prevData) => ({
@@ -52,8 +54,14 @@ export default function Page() {
   >({});
 
   const onClickSubmit = async (data: signUpType) => {
-    await Create(data);
-    resetForm();
+    const createUser = await Create(data);
+
+    if (createUser.success === false) {
+      setDuplicateEmail(createUser.error as string);
+    } else {
+      resetForm();
+      //TODO redirect to email verification page for code input
+    }
   };
 
   const schemaParse = (data: signUpType) => {
@@ -164,6 +172,9 @@ export default function Page() {
           )}
           {errors && errors.email && (
             <div style={{ color: "red" }}>Email - {errors.email}</div>
+          )}
+          {duplicateEmail && (
+            <div style={{ color: "red" }}>Email - {duplicateEmail}</div>
           )}
           {errors && errors.firstname && (
             <div style={{ color: "red" }}>Firstname - {errors.firstname}</div>
