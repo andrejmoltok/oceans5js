@@ -1,13 +1,77 @@
 "use server";
 
+import { cookies } from "next/headers";
+import { nanoid } from "nanoid";
+import { prisma } from "@/lib/prisma/client";
+import { publicIpv4 } from "public-ip";
+import Iron from "@hapi/iron";
+const bcrypt = require("bcryptjs");
 import { signinEmailType } from "@/lib/signin/byemail/signinEmailType";
 
 export default async function LoginEmailAction(data: signinEmailType): Promise<{
   success: boolean;
-  error: string;
+  error?: string;
 }> {
-  return {
-    success: false,
-    error: "Error on login attempt at LoginEmail server action",
-  };
+  try {
+    const cookieStore = cookies();
+    const ironPass = process.env.IRONPASS as string;
+    const userIP = await publicIpv4();
+    const randomNano = nanoid(32);
+
+    const findUserByEmail = await prisma.user.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (!findUserByEmail) {
+      return {
+        success: false,
+        error: "The provided email doesn't exist or it's invalid",
+      };
+    }
+
+    const passMatchEmail = await bcrypt.compare(
+      data.password,
+      findUserByEmail?.passwordHash
+    );
+
+    if (!passMatchEmail) {
+      return { success: false, error: "The given password is incorrect" };
+    }
+
+    const sessionTokenByEmail = {
+      userID: findUserByEmail?.id,
+      email: findUserByEmail?.email,
+      userIP,
+      randomNano,
+    };
+
+    const sealed = await Iron.seal(
+      sessionTokenByEmail,
+      ironPass,
+      Iron.defaults
+    );
+
+    cookieStore.set("userSession", sealed);
+
+    await prisma.session.create({
+      data: {
+        userID: findUserByEmail?.id,
+        sessionData: sealed as string,
+        loginAt: new Date(), //.toISOString().slice(0, 19).replace('T', ' '),
+        status: "active" as string,
+      },
+    });
+
+    await prisma.$disconnect();
+    return { success: true };
+  } catch (error) {
+    console.error("Error during login:", error);
+    await prisma.$disconnect();
+    return {
+      success: false,
+      error: "Error during login",
+    };
+  }
 }

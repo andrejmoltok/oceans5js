@@ -9,8 +9,8 @@ datasource db {
 
 model user {
   id           Int       @id @default(autoincrement()) @db.UnsignedInt
-  username     String    @db.VarChar(100)
-  email        String    @db.VarChar(100)
+  username     String    @unique(map: "user_unique_1") @db.VarChar(100)
+  email        String    @unique(map: "user_unique") @db.VarChar(100)
   passwordHash String    @db.VarChar(100)
   firstname    String    @db.VarChar(100)
   lastname     String?   @db.VarChar(100)

@@ -126,8 +126,16 @@ export default function LoginEmail({
                 schemaParse(loginEmail);
               }}
             />
-            <div>
-              <span style={{ color: "red" }}>*</span> - marked as compulsory
+            <div className={styles.method}>
+              <div>
+                <span style={{ color: "red" }}>*</span> - marked as compulsory
+              </div>
+              <div>
+                <span>
+                  <Icon path={mdiReload} size={0.7} />
+                </span>{" "}
+                - change login method
+              </div>
             </div>
           </form>
         </div>

@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 
 export default async function Create(data: signUpType): Promise<void> {
   try {
+    //TODO check email if it exists, dont' allow duplicate email registration
     bcrypt.genSalt(10, async function (error: string, salt: string) {
       bcrypt.hash(
         data.password,
