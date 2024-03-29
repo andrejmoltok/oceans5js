@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export const signinZodSchema = z
+export const signinUserZodSchema = z
   .object({
-    email: z.string().email("Invalid email format"),
+    username: z.string().min(3, "Username must be at least 3 characters long."),
     password: z
       .string()
       .min(8, "Provide a password at least 8 characters long"),

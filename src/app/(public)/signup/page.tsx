@@ -154,7 +154,7 @@ export default function Page() {
               Register
             </button>
             <div>
-              <span style={{ color: "red" }}>*</span> - marks as compulsory
+              <span style={{ color: "red" }}>*</span> - marked as compulsory
             </div>
           </form>
         </div>

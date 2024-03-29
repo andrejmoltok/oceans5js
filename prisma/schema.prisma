@@ -20,4 +20,17 @@ model user {
   status       String    @db.VarChar(100)
   lastActive   DateTime? @default(now()) @db.Timestamp(0)
   createdAt    DateTime  @default(now()) @db.Timestamp(0)
+  session      session[]
+}
+
+model session {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  userID      Int       @db.UnsignedInt
+  sessionData String    @db.VarChar(1000)
+  loginAt     DateTime  @default(now()) @db.Timestamp(0)
+  logoutAt    DateTime? @default(now()) @db.Timestamp(0)
+  status      String    @db.VarChar(100)
+  user        user      @relation(fields: [userID], references: [id], onDelete: Cascade, map: "session_user_FK")
+
+  @@index([userID], map: "session_user_FK")
 }
