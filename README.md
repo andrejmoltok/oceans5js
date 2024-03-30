@@ -14,5 +14,6 @@
 10. [EgoJS](https://github.com/oguzeroglu/Ego)
 11. Material Design Icons(MDI)
 12. Speakeasy(MFA/TOTP)
+13. EmailJS
 
 List might be updated later on…

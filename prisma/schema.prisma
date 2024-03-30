@@ -8,16 +8,30 @@ datasource db {
 }
 
 model user {
-  id           Int       @id @default(autoincrement()) @db.UnsignedInt
-  username     String    @db.VarChar(100)
-  email        String    @db.VarChar(100)
-  passwordHash String    @db.VarChar(100)
-  firstname    String    @db.VarChar(100)
-  lastname     String?   @db.VarChar(100)
-  birthYear    Int?      @default(1934) @db.UnsignedInt
-  gender       String?   @db.VarChar(50)
-  location     String?   @db.VarChar(100)
-  status       String    @db.VarChar(100)
-  lastActive   DateTime? @default(now()) @db.Timestamp(0)
-  createdAt    DateTime  @default(now()) @db.Timestamp(0)
+  id            Int       @id @default(autoincrement()) @db.UnsignedInt
+  username      String    @unique(map: "user_unique_1") @db.VarChar(100)
+  email         String    @unique(map: "user_unique") @db.VarChar(100)
+  emailVerified Boolean   @default(false)
+  passwordHash  String    @db.VarChar(100)
+  firstname     String    @db.VarChar(100)
+  lastname      String?   @db.VarChar(100)
+  birthYear     Int?      @default(1934) @db.UnsignedInt
+  gender        String?   @db.VarChar(50)
+  location      String?   @db.VarChar(100)
+  status        String    @db.VarChar(100)
+  lastActive    DateTime? @default(now()) @db.Timestamp(0)
+  createdAt     DateTime  @default(now()) @db.Timestamp(0)
+  session       session[]
+}
+
+model session {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  userID      Int       @db.UnsignedInt
+  sessionData String    @db.VarChar(1000)
+  loginAt     DateTime  @default(now()) @db.Timestamp(0)
+  logoutAt    DateTime? @default(now()) @db.Timestamp(0)
+  status      String    @db.VarChar(100)
+  user        user      @relation(fields: [userID], references: [id], onDelete: Cascade, map: "session_user_FK")
+
+  @@index([userID], map: "session_user_FK")
 }
