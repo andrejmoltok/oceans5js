@@ -2,6 +2,7 @@
 
 import React from "react";
 import Icon from "@mdi/react";
+import { useRouter } from "next/navigation";
 import ChooseButton from "./chooseButton";
 
 import { handleZodValidation, ValidationError } from "@/lib/zod/ZodError";
@@ -19,6 +20,8 @@ export default function LoginUser({
   choose: boolean;
   setChoose: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const router = useRouter();
+
   const [loginUser, setLoginUser] = React.useState<signinUserType>({
     username: "",
     password: "",
@@ -33,12 +36,16 @@ export default function LoginUser({
     });
   };
 
+  const [loginError, setLoginError] = React.useState<string>("");
+
   const [userErrors, setUserErrors] = React.useState<
     ValidationError<typeof signinUserZodSchema>
   >({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setLoginError("");
+    setUserErrors({});
     setLoginUser((prevdata) => ({
       ...prevdata,
       [name]: value,
@@ -46,8 +53,14 @@ export default function LoginUser({
   };
 
   const onClickSubmit = async (data: signinUserType) => {
-    await LoginUserAction(data);
-    resetUserForm();
+    const userLogin = await LoginUserAction(data);
+
+    if (userLogin.success === false) {
+      setLoginError(userLogin.error as string);
+    } else {
+      resetUserForm();
+      router.replace("/profile");
+    }
   };
 
   const schemaParse = (data: signinUserType) => {
@@ -148,6 +161,7 @@ export default function LoginUser({
           {userErrors && userErrors.confirm && (
             <div style={{ color: "red" }}>Confirm - {userErrors.confirm}</div>
           )}
+          {loginError && <div style={{ color: "red" }}>{loginError}</div>}
         </div>
       </div>
     </>

@@ -3,6 +3,7 @@
 import React from "react";
 import Icon from "@mdi/react";
 import ChooseButton from "./chooseButton";
+import { useRouter } from "next/navigation";
 
 import LoginEmailAction from "@/actions/signin/loginEmailAction";
 
@@ -20,6 +21,8 @@ export default function LoginEmail({
   choose: boolean;
   setChoose: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const router = useRouter();
+
   const [loginEmail, setLoginEmail] = React.useState<signinEmailType>({
     email: "",
     password: "",
@@ -34,12 +37,16 @@ export default function LoginEmail({
     });
   };
 
+  const [loginError, setLoginError] = React.useState<string>("");
+
   const [emailErrors, setEmailErrors] = React.useState<
     ValidationError<typeof signinEmailZodSchema>
   >({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setLoginError("");
+    setEmailErrors({});
     setLoginEmail((prevdata) => ({
       ...prevdata,
       [name]: value,
@@ -47,8 +54,14 @@ export default function LoginEmail({
   };
 
   const onClickSubmit = async (data: signinEmailType) => {
-    await LoginEmailAction(data);
-    resetEmailForm();
+    const emailLogin = await LoginEmailAction(data);
+
+    if (emailLogin.success === false) {
+      setLoginError(emailLogin.error as string);
+    } else {
+      resetEmailForm();
+      router.replace("/profile");
+    }
   };
 
   const schemaParse = (data: signinEmailType) => {
@@ -151,6 +164,7 @@ export default function LoginEmail({
           {emailErrors && emailErrors.confirm && (
             <div style={{ color: "red" }}>Confirm - {emailErrors.confirm}</div>
           )}
+          {loginError && <div style={{ color: "red" }}>{loginError}</div>}
         </div>
       </div>
     </>

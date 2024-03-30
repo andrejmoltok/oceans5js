@@ -29,7 +29,7 @@ model session {
   userID      Int       @db.UnsignedInt
   sessionData String    @db.VarChar(1000)
   loginAt     DateTime  @default(now()) @db.Timestamp(0)
-  logoutAt    DateTime? @default(now()) @db.Timestamp(0)
+  logoutAt    DateTime? @db.Timestamp(0)
   status      String    @db.VarChar(100)
   user        user      @relation(fields: [userID], references: [id], onDelete: Cascade, map: "session_user_FK")
 
