@@ -27,7 +27,7 @@ model user {
 model session {
   id          Int       @id @default(autoincrement()) @db.UnsignedInt
   userID      Int       @db.UnsignedInt
-  sessionData String    @db.VarChar(1000)
+  sessionData String    @unique(map: "session_unique") @db.VarChar(1000)
   loginAt     DateTime  @default(now()) @db.Timestamp(0)
   logoutAt    DateTime? @db.Timestamp(0)
   status      String    @db.VarChar(100)

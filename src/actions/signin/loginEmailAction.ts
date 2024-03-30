@@ -53,7 +53,11 @@ export default async function LoginEmailAction(data: signinEmailType): Promise<{
       Iron.defaults
     );
 
-    cookieStore.set("userSession", sealed);
+    cookieStore.set("userSession", sealed, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+    });
 
     await prisma.session.create({
       data: {

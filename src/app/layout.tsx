@@ -6,7 +6,7 @@ import SessionProvider from "@/context/Session/SessionProvider";
 
 export const metadata: Metadata = {
   title: "Oceans5",
-  description: "Battleship Clone Game in NextJS",
+  description: "Battleship Clone Game",
 };
 
 export default function RootLayout({
@@ -16,11 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AuthProvider>
-        <SessionProvider>
-          <body>{children}</body>
-        </SessionProvider>
-      </AuthProvider>
+      <body>
+        <AuthProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }

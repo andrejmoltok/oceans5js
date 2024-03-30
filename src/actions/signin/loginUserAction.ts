@@ -49,7 +49,11 @@ export default async function LoginUserAction(data: signinUserType): Promise<{
 
     const sealed = await Iron.seal(sessionTokenByUser, ironPass, Iron.defaults);
 
-    cookieStore.set("userSession", sealed);
+    cookieStore.set("userSession", sealed, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+    });
 
     await prisma.session.create({
       data: {
