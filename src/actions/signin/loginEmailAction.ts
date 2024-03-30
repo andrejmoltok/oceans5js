@@ -59,8 +59,17 @@ export default async function LoginEmailAction(data: signinEmailType): Promise<{
       data: {
         userID: findUserByEmail?.id,
         sessionData: sealed as string,
-        loginAt: new Date(), //.toISOString().slice(0, 19).replace('T', ' '),
+        loginAt: new Date(),
         status: "active" as string,
+      },
+    });
+
+    await prisma.user.update({
+      where: {
+        email: data.email,
+      },
+      data: {
+        lastActive: new Date(),
       },
     });
 

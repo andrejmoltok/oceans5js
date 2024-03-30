@@ -60,6 +60,15 @@ export default async function LoginUserAction(data: signinUserType): Promise<{
       },
     });
 
+    await prisma.user.update({
+      where: {
+        username: data.username,
+      },
+      data: {
+        lastActive: new Date(),
+      },
+    });
+
     await prisma.$disconnect();
     return { success: true };
   } catch (error) {
