@@ -13,6 +13,8 @@ export const sessionExpiry = cron.schedule("*/5 * * * *", async () => {
       },
     });
 
+    // console.log("active sessions: ", sessionsLoginAt.length);
+
     if (sessionsLoginAt.length > 0) {
       sessionsLoginAt.map((val, idx) => {
         const loginHour = val.loginAt.getHours();
@@ -31,7 +33,7 @@ export const sessionExpiry = cron.schedule("*/5 * * * *", async () => {
         newDateSetMinutes.setSeconds(loginSecond);
 
         if (isOneHourLater) {
-          console.log("1 hour timeout for session no.:", val.id);
+          console.log("1 hour timeout for session no.: ", val.id);
           (async () =>
             await prisma.session.update({
               where: { id: val.id },
@@ -42,12 +44,10 @@ export const sessionExpiry = cron.schedule("*/5 * * * *", async () => {
             }))();
         } else {
           console.log(
-            `Session no.:${val.id} is still active and within time range`
+            `Session no.: ${val.id} is still active and within time range`
           );
         }
       });
-    } else {
-      console.log("No active sessions");
     }
 
     await prisma.$disconnect();

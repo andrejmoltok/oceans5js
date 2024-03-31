@@ -54,7 +54,7 @@
   justify-content: center;
 }
 
-.errors {
+.error {
   padding-top: 15px;
   display: flex;
   flex-direction: column;

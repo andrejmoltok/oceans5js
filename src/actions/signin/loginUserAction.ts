@@ -53,6 +53,7 @@ export default async function LoginUserAction(data: signinUserType): Promise<{
       httpOnly: true,
       secure: true,
       sameSite: "lax",
+      maxAge: 3600, // 1 hour
     });
 
     await prisma.session.create({
