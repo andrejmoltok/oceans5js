@@ -1,19 +1,25 @@
 "use client";
 
 import React from "react";
-import Icon from "@mdi/react";
-import ChooseButton from "./chooseButton";
 import { useRouter } from "next/navigation";
 
+import ChooseButton from "./chooseButton";
+
 import AccountLock from "./accountLock";
+import AccountLockCheck from "@/actions/signin/accountLockCheck";
 import LoginEmailAction from "@/actions/signin/loginEmailAction";
 
 import { handleZodValidation, ValidationError } from "@/lib/zod/ZodError";
 import { signinEmailType } from "@/lib/signin/byemail/signinEmailType";
 import { signinEmailZodSchema } from "@/lib/signin/byemail/signinEmailZodSchema";
 
+import Icon from "@mdi/react";
 import styles from "@/styles/signin.module.css";
 import { mdiEmail, mdiLockQuestion, mdiReload } from "@mdi/js";
+
+import { AuthContext } from "@/context/Auth/AuthContext";
+import { SessionContext } from "@/context/Session/SessionContext";
+import GetSessionCookie from "@/actions/context/session/getSessionCookie";
 
 export default function LoginEmail({
   choose,
@@ -24,7 +30,12 @@ export default function LoginEmail({
 }) {
   const router = useRouter();
 
+  const [isAuth, setIsAuth] = React.useContext(AuthContext);
+  const [isSession, setIsSession] = React.useContext(SessionContext);
+
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
+
+  const [lockCheck, setLockCheck] = React.useState<boolean>(false);
 
   const [loginEmail, setLoginEmail] = React.useState<signinEmailType>({
     email: "",
@@ -40,8 +51,10 @@ export default function LoginEmail({
     });
   };
 
+  // Login error messages
   const [loginError, setLoginError] = React.useState<string>("");
 
+  // zod validation error messages
   const [emailErrors, setEmailErrors] = React.useState<
     ValidationError<typeof signinEmailZodSchema>
   >({});
@@ -58,15 +71,23 @@ export default function LoginEmail({
 
   const onClickSubmit = async (data: signinEmailType) => {
     const emailLogin = await LoginEmailAction(data);
+    const cookie = await GetSessionCookie();
 
     if (emailLogin.success === false) {
       setLoginError(emailLogin.error as string);
       setLoginAttempt(loginAttempt + 1);
     } else {
       resetEmailForm();
+      setIsAuth(true as boolean);
+      setIsSession(cookie as string);
       router.replace("/profile");
     }
   };
+
+  (async () => {
+    const lockVerify = await AccountLockCheck();
+    setLockCheck(lockVerify as boolean);
+  })();
 
   const schemaParse = (data: signinEmailType) => {
     handleZodValidation({
@@ -84,7 +105,7 @@ export default function LoginEmail({
   return (
     <>
       <div className={styles.main}>
-        {loginAttempt === 3 ? (
+        {loginAttempt === 3 && lockCheck === false ? (
           <AccountLock />
         ) : (
           <>

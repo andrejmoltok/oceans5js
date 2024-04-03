@@ -1,7 +1,11 @@
 "use client";
 
 import React from "react";
+import AccountLockAction from "@/actions/signin/accountLockAction";
 
 export default function AccountLock() {
-  return <>Your account has been locked for security reasons for 30 minutes.</>;
+  (async () => {
+    await AccountLockAction();
+  })();
+  return <>Your account has been locked for 30 minutes.</>;
 }

@@ -22,6 +22,12 @@ export default async function LoginUserAction(data: signinUserType): Promise<{
       where: {
         username: data.username,
       },
+      select: {
+        id: true,
+        email: true,
+        passwordHash: true,
+        status: true,
+      },
     });
 
     if (!findUserByUsername) {
@@ -38,6 +44,13 @@ export default async function LoginUserAction(data: signinUserType): Promise<{
 
     if (!passMatchUser) {
       return { success: false, error: "The provided password is incorrect" };
+    }
+
+    if (findUserByUsername.status === "lockedOut") {
+      return {
+        success: false,
+        error: "Your account has been locked for 30 minutes",
+      };
     }
 
     const sessionTokenByUser = {

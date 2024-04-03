@@ -1,18 +1,25 @@
 "use client";
 
 import React from "react";
-import Icon from "@mdi/react";
 import { useRouter } from "next/navigation";
+
 import ChooseButton from "./chooseButton";
+
+import AccountLock from "./accountLock";
+import AccountLockCheck from "@/actions/signin/accountLockCheck";
+import LoginUserAction from "@/actions/signin/loginUserAction";
 
 import { handleZodValidation, ValidationError } from "@/lib/zod/ZodError";
 import { signinUserType } from "@/lib/signin/byuser/signinUserType";
 import { signinUserZodSchema } from "@/lib/signin/byuser/signinUserZodSchema";
-import LoginUserAction from "@/actions/signin/loginUserAction";
 
+import Icon from "@mdi/react";
 import styles from "@/styles/signin.module.css";
 import { mdiAccountCircle, mdiLockQuestion, mdiReload } from "@mdi/js";
-import AccountLock from "./accountLock";
+
+import { AuthContext } from "@/context/Auth/AuthContext";
+import { SessionContext } from "@/context/Session/SessionContext";
+import GetSessionCookie from "@/actions/context/session/getSessionCookie";
 
 export default function LoginUser({
   choose,
@@ -23,7 +30,12 @@ export default function LoginUser({
 }) {
   const router = useRouter();
 
+  const [isAuth, setIsAuth] = React.useContext(AuthContext);
+  const [isSession, setIsSession] = React.useContext(SessionContext);
+
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
+
+  const [lockCheck, setLockCheck] = React.useState<boolean>(false);
 
   const [loginUser, setLoginUser] = React.useState<signinUserType>({
     username: "",
@@ -57,15 +69,23 @@ export default function LoginUser({
 
   const onClickSubmit = async (data: signinUserType) => {
     const userLogin = await LoginUserAction(data);
+    const cookie = await GetSessionCookie();
 
     if (userLogin.success === false) {
       setLoginError(userLogin.error as string);
       setLoginAttempt(loginAttempt + 1);
     } else {
       resetUserForm();
+      setIsAuth(true as boolean);
+      setIsSession(cookie as string);
       router.replace("/profile");
     }
   };
+
+  (async () => {
+    const lockVerify = await AccountLockCheck();
+    setLockCheck(lockVerify as boolean);
+  })();
 
   const schemaParse = (data: signinUserType) => {
     handleZodValidation({
@@ -83,7 +103,7 @@ export default function LoginUser({
   return (
     <>
       <div className={styles.main}>
-        {loginAttempt === 3 ? (
+        {loginAttempt === 3 && lockCheck === false ? (
           <AccountLock />
         ) : (
           <>
