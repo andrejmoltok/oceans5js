@@ -5,9 +5,9 @@ import { AuthContext } from "./AuthContext";
 
 export default function AuthProvider({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   const [isAuth, setIsAuth] = React.useState<boolean>(false);
 
   return (
