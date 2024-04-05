@@ -72,22 +72,22 @@ export default function LoginEmail({
   const onClickSubmit = async (data: signinEmailType) => {
     const emailLogin = await LoginEmailAction(data);
     const cookie = await GetSessionCookie();
+    const accountLockCheck = await AccountLockCheck({
+      email: loginEmail.email,
+    });
 
     if (emailLogin.success === false) {
       setLoginError(emailLogin.error as string);
-      setLoginAttempt(loginAttempt + 1);
+      if (accountLockCheck === false) {
+        setLoginAttempt(loginAttempt + 1);
+      }
     } else {
       resetEmailForm();
-      setIsAuth(true as boolean);
-      setIsSession(cookie as string);
+      setIsAuth(true);
+      setIsSession(cookie);
       router.replace("/profile");
     }
   };
-
-  (async () => {
-    const lockVerify = await AccountLockCheck();
-    setLockCheck(lockVerify as boolean);
-  })();
 
   const schemaParse = (data: signinEmailType) => {
     handleZodValidation({
@@ -96,7 +96,7 @@ export default function LoginEmail({
       onSuccess: async () => {
         setEmailErrors({});
         await onClickSubmit(data);
-        resetEmailForm();
+        // resetEmailForm();
       },
       schema: signinEmailZodSchema,
     });
@@ -104,108 +104,112 @@ export default function LoginEmail({
 
   return (
     <>
-      <div className={styles.main}>
-        {loginAttempt === 3 && lockCheck === false ? (
-          <AccountLock />
-        ) : (
-          <>
-            <div className={styles.wheel}>
-              <div className={styles.title}>Login with Email</div>
-              <ChooseButton
-                choose={choose}
-                setChoose={setChoose}
-                resetEmailForm={resetEmailForm}
-              />
-            </div>
-            <div className={styles.container}>
-              <div className={styles.icons}>
-                <Icon path={mdiEmail} size={0.8} />
-                <Icon path={mdiLockQuestion} size={0.8} />
-                <Icon path={mdiLockQuestion} size={0.8} />
+      {loginAttempt === 3 ? (
+        <AccountLock email={loginEmail.email} />
+      ) : (
+        <>
+          <div className={styles.main}>
+            <>
+              <div className={styles.wheel}>
+                <div className={styles.title}>Login with Email</div>
+                <ChooseButton
+                  choose={choose}
+                  setChoose={setChoose}
+                  resetEmailForm={resetEmailForm}
+                />
               </div>
-              <form className={styles.form}>
-                <label htmlFor="email">
-                  Email:<span style={{ color: "red" }}>*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={loginEmail.email}
-                  onChange={(e) => handleInputChange(e)}
-                  autoComplete="on"
-                  placeholder="email"
-                />
-                <label htmlFor="password">
-                  Password:<span style={{ color: "red" }}>*</span>
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={loginEmail.password}
-                  onChange={(e) => handleInputChange(e)}
-                  autoComplete="on"
-                  placeholder="password"
-                />
-                <label htmlFor="confirm">
-                  Confirm:<span style={{ color: "red" }}>*</span>
-                </label>
-                <input
-                  type="password"
-                  id="confirm"
-                  name="confirm"
-                  value={loginEmail.confirm}
-                  onChange={(e) => handleInputChange(e)}
-                  autoComplete="on"
-                  placeholder="confirm password"
-                />
-                <input
-                  type="submit"
-                  value="Log In"
-                  onClick={(event) => {
-                    event?.preventDefault();
-                    schemaParse(loginEmail);
-                  }}
-                />
-                <div className={styles.method}>
-                  <div>
-                    <span style={{ color: "red" }}>*</span> - marked as
-                    compulsory
+              <div className={styles.container}>
+                <div className={styles.icons}>
+                  <Icon path={mdiEmail} size={0.8} />
+                  <Icon path={mdiLockQuestion} size={0.8} />
+                  <Icon path={mdiLockQuestion} size={0.8} />
+                </div>
+                <form className={styles.form}>
+                  <label htmlFor="email">
+                    Email:<span style={{ color: "red" }}>*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={loginEmail.email}
+                    onChange={(e) => handleInputChange(e)}
+                    autoComplete="on"
+                    placeholder="email"
+                  />
+                  <label htmlFor="password">
+                    Password:<span style={{ color: "red" }}>*</span>
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={loginEmail.password}
+                    onChange={(e) => handleInputChange(e)}
+                    autoComplete="on"
+                    placeholder="password"
+                  />
+                  <label htmlFor="confirm">
+                    Confirm:<span style={{ color: "red" }}>*</span>
+                  </label>
+                  <input
+                    type="password"
+                    id="confirm"
+                    name="confirm"
+                    value={loginEmail.confirm}
+                    onChange={(e) => handleInputChange(e)}
+                    autoComplete="on"
+                    placeholder="confirm password"
+                  />
+                  <input
+                    type="submit"
+                    value="Log In"
+                    onClick={(event) => {
+                      event?.preventDefault();
+                      schemaParse(loginEmail);
+                    }}
+                  />
+                  <div className={styles.method}>
+                    <div>
+                      <span style={{ color: "red" }}>*</span> - marked as
+                      compulsory
+                    </div>
+                    <div>
+                      <span>
+                        <Icon path={mdiReload} size={0.7} />
+                      </span>{" "}
+                      - change login method
+                    </div>
                   </div>
-                  <div>
-                    <span>
-                      <Icon path={mdiReload} size={0.7} />
-                    </span>{" "}
-                    - change login method
+                </form>
+              </div>
+              <div className={styles.error}>
+                {loginAttempt > 0 && (
+                  <div style={{ color: "red" }}>
+                    Failed login attempts: {loginAttempt} of 3
                   </div>
-                </div>
-              </form>
-            </div>
-            <div className={styles.error}>
-              {loginAttempt > 0 && (
-                <div style={{ color: "red" }}>
-                  Failed login attempts: {loginAttempt} of 3
-                </div>
-              )}
-              {emailErrors && emailErrors.email && (
-                <div style={{ color: "red" }}>Email - {emailErrors.email}</div>
-              )}
-              {emailErrors && emailErrors.password && (
-                <div style={{ color: "red" }}>
-                  Password - {emailErrors.password}
-                </div>
-              )}
-              {emailErrors && emailErrors.confirm && (
-                <div style={{ color: "red" }}>
-                  Confirm - {emailErrors.confirm}
-                </div>
-              )}
-              {loginError && <div style={{ color: "red" }}>{loginError}</div>}
-            </div>
-          </>
-        )}
-      </div>
+                )}
+                {emailErrors && emailErrors.email && (
+                  <div style={{ color: "red" }}>
+                    Email - {emailErrors.email}
+                  </div>
+                )}
+                {emailErrors && emailErrors.password && (
+                  <div style={{ color: "red" }}>
+                    Password - {emailErrors.password}
+                  </div>
+                )}
+                {emailErrors && emailErrors.confirm && (
+                  <div style={{ color: "red" }}>
+                    Confirm - {emailErrors.confirm}
+                  </div>
+                )}
+                {loginError && <div style={{ color: "red" }}>{loginError}</div>}
+              </div>
+            </>
+          </div>
+        </>
+      )}
     </>
   );
 }

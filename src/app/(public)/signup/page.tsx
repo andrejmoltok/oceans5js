@@ -28,7 +28,7 @@ export default function Page() {
     confirm: "",
   });
 
-  const [duplicateEmail, setDuplicateEmail] = React.useState<string>("");
+  const [duplicate, setDuplicate] = React.useState<string>("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,7 +38,7 @@ export default function Page() {
     }));
   };
 
-  const resetForm = () => {
+  const resetForm = (): void => {
     setSignUpData({
       username: "",
       email: "",
@@ -57,7 +57,7 @@ export default function Page() {
     const createUser = await Create(data);
 
     if (createUser.success === false) {
-      setDuplicateEmail(createUser.error as string);
+      setDuplicate(createUser.error as string);
     } else {
       resetForm();
       //TODO redirect to email verification page for code input
@@ -173,8 +173,8 @@ export default function Page() {
           {errors && errors.email && (
             <div style={{ color: "red" }}>Email - {errors.email}</div>
           )}
-          {duplicateEmail && (
-            <div style={{ color: "red" }}>Email - {duplicateEmail}</div>
+          {duplicate && (
+            <div style={{ color: "red" }}>Email/Username - {duplicate}</div>
           )}
           {errors && errors.firstname && (
             <div style={{ color: "red" }}>Firstname - {errors.firstname}</div>

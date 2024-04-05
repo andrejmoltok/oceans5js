@@ -1,31 +1,63 @@
 "use server";
 
 import { prisma } from "@/lib/prisma/client";
-import Iron from "@hapi/iron";
-import { cookies } from "next/headers";
 
-export default async function AccountLockCheck(): Promise<boolean> {
-  const cookieStore = cookies();
-  const cookie = cookieStore.get("userSession")?.value as string;
-  const unsealed = await Iron.unseal(
-    cookie,
-    process.env.IRONPASS as string,
-    Iron.defaults
-  );
+export default async function AccountLockCheck({
+  username,
+  email,
+}: {
+  username?: string;
+  email?: string;
+}): Promise<boolean> {
+  try {
+    const queryUsers = await prisma.user.findMany({
+      select: {
+        username: true,
+        email: true,
+      },
+    });
+    const statusCheckByUser: { status: string } | null =
+      await prisma.user.findUnique({
+        where: {
+          username: queryUsers
+            .map((val) => {
+              return val.username.includes(`${username}`) ? val.username : null;
+            })
+            .toString(),
+        },
+        select: {
+          status: true,
+        },
+      });
 
-  const statusCheck: { status: string } | null = await prisma.user.findUnique({
-    where: {
-      id: unsealed.userID,
-    },
-    select: {
-      status: true,
-    },
-  });
+    const statusCheckByEmail: { status: string } | null =
+      await prisma.user.findUnique({
+        where: {
+          email: queryUsers
+            .map((val) => {
+              return val.email.includes(`${email}`) ? val.email : null;
+            })
+            .toString(),
+        },
+        select: {
+          status: true,
+        },
+      });
 
-  if (statusCheck?.status === "lockedOut") {
-    return true;
-  } else {
-    console.log("Can't find record or not lockedOut");
+    if (
+      statusCheckByUser?.status.toString() === "lockedOut" ||
+      statusCheckByEmail?.status.toString() === "lockedOut"
+    ) {
+      await prisma.$disconnect();
+      return true;
+    } else {
+      console.log("Can't find record or NOT LockedOut");
+      await prisma.$disconnect();
+      return false;
+    }
+  } catch (error) {
+    console.log("AccountLockCheck - ", error);
+    await prisma.$disconnect();
     return false;
   }
 }

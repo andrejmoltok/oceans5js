@@ -4,7 +4,7 @@ import "./globals.css";
 import AuthProvider from "@/context/Auth/AuthProvider";
 import SessionProvider from "@/context/Session/SessionProvider";
 
-import { sessionExpiry } from "@/actions/signoff/sessionExpiredAction";
+import { sessionExpiry } from "@/actions/signoff/sessionExpiredCron";
 
 export const metadata: Metadata = {
   title: "Oceans5",
@@ -21,9 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
-          <SessionProvider>{children}</SessionProvider>
-        </AuthProvider>
+        <SessionProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </SessionProvider>
       </body>
     </html>
   );

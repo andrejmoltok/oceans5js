@@ -70,22 +70,22 @@ export default function LoginUser({
   const onClickSubmit = async (data: signinUserType) => {
     const userLogin = await LoginUserAction(data);
     const cookie = await GetSessionCookie();
+    const accountLockCheck = await AccountLockCheck({
+      username: loginUser.username,
+    });
 
     if (userLogin.success === false) {
       setLoginError(userLogin.error as string);
-      setLoginAttempt(loginAttempt + 1);
+      if (accountLockCheck === false) {
+        setLoginAttempt(loginAttempt + 1);
+      }
     } else {
       resetUserForm();
-      setIsAuth(true as boolean);
-      setIsSession(cookie as string);
+      setIsAuth(true);
+      setIsSession(cookie);
       router.replace("/profile");
     }
   };
-
-  (async () => {
-    const lockVerify = await AccountLockCheck();
-    setLockCheck(lockVerify as boolean);
-  })();
 
   const schemaParse = (data: signinUserType) => {
     handleZodValidation({
@@ -94,7 +94,7 @@ export default function LoginUser({
       onSuccess: async () => {
         setUserErrors({});
         await onClickSubmit(data);
-        resetUserForm();
+        // resetUserForm();
       },
       schema: signinUserZodSchema,
     });
@@ -102,110 +102,105 @@ export default function LoginUser({
 
   return (
     <>
-      <div className={styles.main}>
-        {loginAttempt === 3 && lockCheck === false ? (
-          <AccountLock />
-        ) : (
-          <>
-            <div className={styles.wheel}>
-              <div className={styles.title}>Login with Username</div>
-              <ChooseButton
-                choose={choose}
-                setChoose={setChoose}
-                resetUserForm={resetUserForm}
+      {loginAttempt === 3 ? (
+        <AccountLock username={loginUser.username} />
+      ) : (
+        <>
+          <div className={styles.wheel}>
+            <div className={styles.title}>Login with Username</div>
+            <ChooseButton
+              choose={choose}
+              setChoose={setChoose}
+              resetUserForm={resetUserForm}
+            />
+          </div>
+          <div className={styles.container}>
+            <div className={styles.icons}>
+              <Icon path={mdiAccountCircle} size={0.8} />
+              <Icon path={mdiLockQuestion} size={0.8} />
+              <Icon path={mdiLockQuestion} size={0.8} />
+            </div>
+            <form className={styles.form}>
+              <label htmlFor="username">
+                Username:<span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={loginUser.username}
+                onChange={(e) => handleInputChange(e)}
+                autoComplete="on"
+                placeholder="username"
               />
-            </div>
-            <div className={styles.container}>
-              <div className={styles.icons}>
-                <Icon path={mdiAccountCircle} size={0.8} />
-                <Icon path={mdiLockQuestion} size={0.8} />
-                <Icon path={mdiLockQuestion} size={0.8} />
+              <label htmlFor="password">
+                Password:<span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={loginUser.password}
+                onChange={(e) => handleInputChange(e)}
+                autoComplete="on"
+                placeholder="password"
+              />
+              <label htmlFor="confirm">
+                Confirm:<span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="password"
+                id="confirm"
+                name="confirm"
+                value={loginUser.confirm}
+                onChange={(e) => handleInputChange(e)}
+                autoComplete="on"
+                placeholder="confirm password"
+              />
+              <input
+                type="submit"
+                value="Log In"
+                onClick={(event) => {
+                  event?.preventDefault();
+                  schemaParse(loginUser);
+                }}
+              />
+              <div className={styles.method}>
+                <div>
+                  <span style={{ color: "red" }}>*</span> - marked as compulsory
+                </div>
+                <div>
+                  <span>
+                    <Icon path={mdiReload} size={0.7} />
+                  </span>{" "}
+                  - change login method
+                </div>
               </div>
-              <form className={styles.form}>
-                <label htmlFor="username">
-                  Username:<span style={{ color: "red" }}>*</span>
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={loginUser.username}
-                  onChange={(e) => handleInputChange(e)}
-                  autoComplete="on"
-                  placeholder="username"
-                />
-                <label htmlFor="password">
-                  Password:<span style={{ color: "red" }}>*</span>
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={loginUser.password}
-                  onChange={(e) => handleInputChange(e)}
-                  autoComplete="on"
-                  placeholder="password"
-                />
-                <label htmlFor="confirm">
-                  Confirm:<span style={{ color: "red" }}>*</span>
-                </label>
-                <input
-                  type="password"
-                  id="confirm"
-                  name="confirm"
-                  value={loginUser.confirm}
-                  onChange={(e) => handleInputChange(e)}
-                  autoComplete="on"
-                  placeholder="confirm password"
-                />
-                <input
-                  type="submit"
-                  value="Log In"
-                  onClick={(event) => {
-                    event?.preventDefault();
-                    schemaParse(loginUser);
-                  }}
-                />
-                <div className={styles.method}>
-                  <div>
-                    <span style={{ color: "red" }}>*</span> - marked as
-                    compulsory
-                  </div>
-                  <div>
-                    <span>
-                      <Icon path={mdiReload} size={0.7} />
-                    </span>{" "}
-                    - change login method
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div className={styles.error}>
-              {loginAttempt > 0 && (
-                <div style={{ color: "red" }}>
-                  Failed login attempts: {loginAttempt} of 3
-                </div>
-              )}
-              {userErrors && userErrors.username && (
-                <div style={{ color: "red" }}>
-                  Username - {userErrors.username}
-                </div>
-              )}
-              {userErrors && userErrors.password && (
-                <div style={{ color: "red" }}>
-                  Password - {userErrors.password}
-                </div>
-              )}
-              {userErrors && userErrors.confirm && (
-                <div style={{ color: "red" }}>
-                  Confirm - {userErrors.confirm}
-                </div>
-              )}
-              {loginError && <div style={{ color: "red" }}>{loginError}</div>}
-            </div>
-          </>
-        )}
-      </div>
+            </form>
+          </div>
+          <div className={styles.error}>
+            {loginAttempt > 0 && (
+              <div style={{ color: "red" }}>
+                Failed login attempts: {loginAttempt} of 3
+              </div>
+            )}
+            {userErrors && userErrors.username && (
+              <div style={{ color: "red" }}>
+                Username - {userErrors.username}
+              </div>
+            )}
+            {userErrors && userErrors.password && (
+              <div style={{ color: "red" }}>
+                Password - {userErrors.password}
+              </div>
+            )}
+            {userErrors && userErrors.confirm && (
+              <div style={{ color: "red" }}>Confirm - {userErrors.confirm}</div>
+            )}
+            {loginError && <div style={{ color: "red" }}>{loginError}</div>}
+          </div>
+        </>
+      )}
     </>
   );
 }
