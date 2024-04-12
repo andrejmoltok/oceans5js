@@ -15,5 +15,7 @@
 11. Material Design Icons(MDI)
 12. Speakeasy(MFA/TOTP)
 13. EmailJS
+14. Croner
+15. Jotai
 
 List might be updated later on…
