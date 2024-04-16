@@ -1,20 +1,18 @@
-"use server";
-
-import { CronJob } from "cron";
+var cron = require("node-cron");
 import { prisma } from "@/lib/prisma/client";
-import { cookies } from "next/headers";
 import Iron from "@hapi/iron";
+import ReadCookieData from "./readCookie";
 
 const currentTime = new Date();
 const halfLater = new Date();
 
-export const accountUnlock = new CronJob(
+export const accountUnlock = cron.schedule(
   new Date(halfLater.setTime(currentTime.getTime() + 30 * 60 * 1000)),
   async () => {
     try {
-      const cookieStore = cookies();
+      const cookieData = await ReadCookieData();
       const unsealed: { username?: string; email?: string } = await Iron.unseal(
-        cookieStore.get("lockAndKey")?.value as string,
+        cookieData as string,
         process.env.IRONPASS as string,
         Iron.defaults
       );
@@ -44,6 +42,5 @@ export const accountUnlock = new CronJob(
       console.log("accountUnLockCron - ", error);
       await prisma.$disconnect();
     }
-  },
-  null
+  }
 );

@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/prisma/client";
-import { CronJob } from "cron";
+var cron = require("node-cron");
 import ActiveSessionCheck from "./activeSessionCheck";
 
 const currentTime = new Date();
 const oneHourLater = new Date();
 
-export const sessionExpiry = new CronJob(
+export const sessionExpiry = cron.schedule(
   new Date(oneHourLater.setTime(currentTime.getTime() + 60 * 60 * 1000)),
   async () => {
     try {

@@ -77,11 +77,15 @@ export default async function AccountLockAction({
           lockedAt: new Date(),
         },
       });
+    } else {
+      return;
     }
     await prisma.$disconnect();
+    return;
   } catch (error) {
     console.log(error);
     await prisma.$disconnect();
+    return;
     //TODO sends a notifiction to the admin panel
   }
 }

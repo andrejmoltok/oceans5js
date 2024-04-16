@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import AccountLockAction from "@/actions/signin/accountLockAction";
+import { accountUnlock } from "@/actions/signin/accountUnLockCron";
 
 export default function AccountLock({
   username,
@@ -9,15 +11,22 @@ export default function AccountLock({
 }: {
   username?: string;
   email?: string;
-}) {
-  (async () => {
-    if (username !== undefined && email === undefined) {
-      await AccountLockAction({ username: username });
-    } else if (email !== undefined && username === undefined) {
-      await AccountLockAction({ email: email });
-    } else {
-      return;
+}): void {
+  const router = useRouter();
+  React.useEffect(() => {
+    async function Lock() {
+      if (username !== undefined && email === undefined) {
+        await AccountLockAction({ username: username });
+        router.push("/");
+        accountUnlock.start();
+      } else if (email !== undefined && username === undefined) {
+        await AccountLockAction({ email: email });
+        router.push("/");
+        accountUnlock.start();
+      } else {
+        router.push("/");
+      }
     }
-  })();
-  return <>Your account has been locked for 30 minutes.</>;
+    Lock();
+  }, [router, username, email]);
 }
