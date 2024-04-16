@@ -3,7 +3,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import AccountLockAction from "@/actions/signin/accountLockAction";
-import { accountUnlock } from "@/actions/signin/accountUnLockCron";
 
 export default function AccountLock({
   username,
@@ -18,11 +17,9 @@ export default function AccountLock({
       if (username !== undefined && email === undefined) {
         await AccountLockAction({ username: username });
         router.push("/");
-        accountUnlock.start();
       } else if (email !== undefined && username === undefined) {
         await AccountLockAction({ email: email });
         router.push("/");
-        accountUnlock.start();
       } else {
         router.push("/");
       }
