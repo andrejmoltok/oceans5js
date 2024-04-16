@@ -4,7 +4,7 @@
 
 1. [ReactJS](https://react.dev)
 2. [NextJS](https://nextjs.org)
-3. [MySQL](htpps://www.msql.com)
+3. [MySQL](https://www.msql.com)
 4. [Prisma](https://prisma.io)
 5. [Zod](https://zod.dev)
 6. [BCryptJS](https://www.npmjs.com/package/bcryptjs)
