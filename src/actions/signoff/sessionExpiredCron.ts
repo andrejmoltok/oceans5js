@@ -1,37 +1,23 @@
 import { prisma } from "@/lib/prisma/client";
 import { CronJob } from "cron";
-import ReadCookieData from "./readCookie";
+import ActiveSessionCheck from "./activeSessionCheck";
 
 const currentTime = new Date();
 const oneHourLater = new Date();
 
 export const sessionExpiry = new CronJob(
-  new Date(oneHourLater.setTime(currentTime.getTime() + 1 * 60 * 1000)),
+  new Date(oneHourLater.setTime(currentTime.getTime() + 60 * 60 * 1000)),
   async () => {
     try {
-      const sessionsLoginAt = await prisma.session.findFirst({
-        where: {
-          AND: [
-            {
-              userID: { equals: (await ReadCookieData()) as number },
-              status: { equals: "active" },
-            },
-          ],
-        },
-        select: {
-          loginAt: true,
-          id: true,
-          status: true,
-        },
-      });
+      const sessionLoginAt = await ActiveSessionCheck();
 
-      const loginHour = sessionsLoginAt?.loginAt.getHours();
+      const loginHour = sessionLoginAt?.loginAt.getHours();
       const currentHour = new Date().getHours();
 
-      const loginMinute = sessionsLoginAt?.loginAt.getMinutes();
+      const loginMinute = sessionLoginAt?.loginAt.getMinutes();
       const currentMinute = new Date().getMinutes();
 
-      const loginSecond = sessionsLoginAt?.loginAt.getSeconds();
+      const loginSecond = sessionLoginAt?.loginAt.getSeconds();
 
       const isOneHourLater =
         currentHour === (loginHour as number) + 1 &&
@@ -42,17 +28,17 @@ export const sessionExpiry = new CronJob(
       newDateSetMinutes.setSeconds(loginSecond as number);
 
       if (isOneHourLater) {
-        console.log("1 hour timeout for session no.: ", sessionsLoginAt?.id);
+        console.log("1 hour timeout for session no.: ", sessionLoginAt?.id);
         (async () =>
           await prisma.session.update({
-            where: { id: sessionsLoginAt?.id },
+            where: { id: sessionLoginAt?.id },
             data: {
               logoutAt: newDateSetMinutes as Date,
               status: "expired",
             },
           }))();
       } else {
-        console.log(`Session ${sessionsLoginAt?.id} active...`);
+        console.log(`Session ${sessionLoginAt?.id} still active...`);
       }
 
       await prisma.$disconnect();
