@@ -23,6 +23,7 @@ model user {
   mfaEnabled    Boolean   @default(false)
   lastActive    DateTime? @default(now()) @db.Timestamp(0)
   createdAt     DateTime  @default(now()) @db.Timestamp(0)
+  player        player[]
   session       session[]
 }
 
@@ -36,4 +37,26 @@ model session {
   user        user      @relation(fields: [userID], references: [id], onDelete: Cascade, map: "session_user_FK")
 
   @@index([userID], map: "session_user_FK")
+}
+
+model player {
+  id            Int     @id @default(autoincrement()) @db.UnsignedInt
+  userID        Int     @db.UnsignedInt
+  accuracyRatio Decimal @default(0) @db.Decimal(10, 0)
+  avgScore      Int     @default(0) @db.UnsignedInt
+  gamesLost     Int     @default(0) @db.UnsignedInt
+  gamesPlayed   Decimal @default(0) @db.Decimal(10, 0)
+  gamesWon      Int     @default(0) @db.UnsignedInt
+  level         Int     @default(1) @db.UnsignedInt
+  loseRatio     Decimal @default(0) @db.Decimal(10, 0)
+  nickname      String  @db.VarChar(100)
+  imgURL        String? @db.VarChar(1000)
+  playtimeTotal Decimal @default(0) @db.Decimal(10, 0)
+  rank          String  @default("Seaman") @db.VarChar(100)
+  totalPoints   Int     @default(0) @db.UnsignedInt
+  winRatio      Decimal @default(0) @db.Decimal(10, 0)
+  xp            Int     @default(0) @db.UnsignedInt
+  user          user    @relation(fields: [userID], references: [id], onDelete: Cascade, map: "player_user_FK")
+
+  @@index([userID], map: "player_user_FK")
 }
