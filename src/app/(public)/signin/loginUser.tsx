@@ -17,9 +17,7 @@ import Icon from "@mdi/react";
 import styles from "@/styles/signin.module.css";
 import { mdiAccountCircle, mdiLockQuestion, mdiReload } from "@mdi/js";
 
-import { AuthContext } from "@/context/Auth/AuthContext";
-import { SessionContext } from "@/context/Session/SessionContext";
-import GetSessionCookie from "@/actions/context/session/getSessionCookie";
+import { sessionExpiry } from "@/actions/signoff/sessionExpiredCron";
 
 export default function LoginUser({
   choose,
@@ -29,9 +27,6 @@ export default function LoginUser({
   setChoose: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
-
-  const [isAuth, setIsAuth] = React.useContext(AuthContext);
-  const [isSession, setIsSession] = React.useContext(SessionContext);
 
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
 
@@ -69,7 +64,6 @@ export default function LoginUser({
 
   const onClickSubmit = async (data: signinUserType) => {
     const userLogin = await LoginUserAction(data);
-    const cookie = await GetSessionCookie();
     const accountLockCheck = await AccountLockCheck({
       username: loginUser.username,
     });
@@ -81,8 +75,7 @@ export default function LoginUser({
       }
     } else {
       resetUserForm();
-      setIsAuth(true);
-      setIsSession(cookie);
+      // sessionExpiry.start();
       router.replace("/profile");
     }
   };

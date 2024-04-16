@@ -17,9 +17,7 @@ import Icon from "@mdi/react";
 import styles from "@/styles/signin.module.css";
 import { mdiEmail, mdiLockQuestion, mdiReload } from "@mdi/js";
 
-import { AuthContext } from "@/context/Auth/AuthContext";
-import { SessionContext } from "@/context/Session/SessionContext";
-import GetSessionCookie from "@/actions/context/session/getSessionCookie";
+import { sessionExpiry } from "@/actions/signoff/sessionExpiredCron";
 
 export default function LoginEmail({
   choose,
@@ -29,9 +27,6 @@ export default function LoginEmail({
   setChoose: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
-
-  const [isAuth, setIsAuth] = React.useContext(AuthContext);
-  const [isSession, setIsSession] = React.useContext(SessionContext);
 
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
 
@@ -71,7 +66,6 @@ export default function LoginEmail({
 
   const onClickSubmit = async (data: signinEmailType) => {
     const emailLogin = await LoginEmailAction(data);
-    const cookie = await GetSessionCookie();
     const accountLockCheck = await AccountLockCheck({
       email: loginEmail.email,
     });
@@ -83,8 +77,7 @@ export default function LoginEmail({
       }
     } else {
       resetEmailForm();
-      setIsAuth(true);
-      setIsSession(cookie);
+      // sessionExpiry.start();
       router.replace("/profile");
     }
   };

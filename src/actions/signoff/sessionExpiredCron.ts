@@ -1,58 +1,58 @@
-import { CronJob } from "cron";
 import { prisma } from "@/lib/prisma/client";
+import { CronJob } from "cron";
+import ReadCookieData from "./readCookie";
 
 const currentTime = new Date();
 const oneHourLater = new Date();
 
 export const sessionExpiry = new CronJob(
-  new Date(oneHourLater.setTime(currentTime.getTime() + 60 * 60 * 1000)),
+  new Date(oneHourLater.setTime(currentTime.getTime() + 1 * 60 * 1000)),
   async () => {
     try {
-      const sessionsLoginAt = await prisma.session.findMany({
+      const sessionsLoginAt = await prisma.session.findFirst({
         where: {
-          status: "active",
+          AND: [
+            {
+              userID: { equals: (await ReadCookieData()) as number },
+              status: { equals: "active" },
+            },
+          ],
         },
         select: {
           loginAt: true,
           id: true,
+          status: true,
         },
       });
 
-      // console.log("active sessions: ", sessionsLoginAt.length);
+      const loginHour = sessionsLoginAt?.loginAt.getHours();
+      const currentHour = new Date().getHours();
 
-      if (sessionsLoginAt.length > 0) {
-        sessionsLoginAt.map((val, idx) => {
-          const loginHour = val.loginAt.getHours();
-          const currentHour = new Date().getHours();
+      const loginMinute = sessionsLoginAt?.loginAt.getMinutes();
+      const currentMinute = new Date().getMinutes();
 
-          const loginMinute = val.loginAt.getMinutes();
-          const currentMinute = new Date().getMinutes();
+      const loginSecond = sessionsLoginAt?.loginAt.getSeconds();
 
-          const loginSecond = val.loginAt.getSeconds();
+      const isOneHourLater =
+        currentHour === (loginHour as number) + 1 &&
+        currentMinute >= (loginMinute as number);
 
-          const isOneHourLater =
-            currentHour === loginHour + 1 && currentMinute >= loginMinute;
+      const newDateSetMinutes = new Date();
+      newDateSetMinutes.setMinutes(loginMinute as number);
+      newDateSetMinutes.setSeconds(loginSecond as number);
 
-          const newDateSetMinutes = new Date();
-          newDateSetMinutes.setMinutes(loginMinute);
-          newDateSetMinutes.setSeconds(loginSecond);
-
-          if (isOneHourLater) {
-            console.log("1 hour timeout for session no.: ", val.id);
-            (async () =>
-              await prisma.session.update({
-                where: { id: val.id },
-                data: {
-                  logoutAt: newDateSetMinutes as Date,
-                  status: "expired",
-                },
-              }))();
-          } else {
-            console.log(
-              `Session no.: ${val.id} is still active and within time range`
-            );
-          }
-        });
+      if (isOneHourLater) {
+        console.log("1 hour timeout for session no.: ", sessionsLoginAt?.id);
+        (async () =>
+          await prisma.session.update({
+            where: { id: sessionsLoginAt?.id },
+            data: {
+              logoutAt: newDateSetMinutes as Date,
+              status: "expired",
+            },
+          }))();
+      } else {
+        console.log(`Session ${sessionsLoginAt?.id} active...`);
       }
 
       await prisma.$disconnect();
@@ -60,6 +60,5 @@ export const sessionExpiry = new CronJob(
       console.log(error);
       await prisma.$disconnect();
     }
-  },
-  null
+  }
 );
