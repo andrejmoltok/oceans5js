@@ -23,6 +23,7 @@ model user {
   mfaEnabled    Boolean   @default(false)
   lastActive    DateTime? @default(now()) @db.Timestamp(0)
   createdAt     DateTime  @default(now()) @db.Timestamp(0)
+  codes         codes[]
   player        player[]
   session       session[]
 }
@@ -59,4 +60,17 @@ model player {
   user          user    @relation(fields: [userID], references: [id], onDelete: Cascade, map: "player_user_FK")
 
   @@index([userID], map: "player_user_FK")
+}
+
+model codes {
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  userID    Int       @db.UnsignedInt
+  codeType  String    @db.VarChar(100)
+  code      String    @db.VarChar(100)
+  createdAt DateTime  @default(now()) @db.Timestamp(0)
+  used      Boolean   @default(false)
+  usedAt    DateTime? @db.Timestamp(0)
+  user      user      @relation(fields: [userID], references: [id], onDelete: Cascade, map: "codes_user_FK")
+
+  @@index([userID], map: "codes_user_FK")
 }

@@ -28,6 +28,7 @@ export default async function LoginUserAction(data: signinUserType): Promise<{
         email: true,
         passwordHash: true,
         status: true,
+        emailVerified: true,
       },
     });
 
@@ -51,6 +52,13 @@ export default async function LoginUserAction(data: signinUserType): Promise<{
       return {
         success: false,
         error: "Your account is locked for 30 minutes",
+      };
+    }
+
+    if (findUserByUsername.emailVerified === false) {
+      return {
+        success: false,
+        error: "Please verify your email address first",
       };
     }
 
