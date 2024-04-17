@@ -10,7 +10,7 @@ export default function AccountLock({
 }: {
   username?: string;
   email?: string;
-}): void {
+}) {
   const router = useRouter();
   React.useEffect(() => {
     async function Lock() {
@@ -26,4 +26,5 @@ export default function AccountLock({
     }
     Lock();
   }, [router, username, email]);
+  return <></>;
 }

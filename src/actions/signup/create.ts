@@ -8,9 +8,22 @@ export default async function Create(
   data: signUpType
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const queryUsers = await prisma.user.findMany({
+      select: {
+        username: true,
+        email: true,
+      },
+    });
+
     const checkUserByUsername = await prisma.user.findUnique({
       where: {
-        username: data.username,
+        username: queryUsers
+          .map((val) => {
+            return val.username.includes(`${data.username}`)
+              ? val.username
+              : null;
+          })
+          .toString(),
       },
       select: {
         username: true,
@@ -19,7 +32,11 @@ export default async function Create(
 
     const checkUserByEmail = await prisma.user.findUnique({
       where: {
-        email: data.email,
+        email: queryUsers
+          .map((val) => {
+            return val.email.includes(`${data.email}`) ? val.email : null;
+          })
+          .toString(),
       },
       select: {
         email: true,

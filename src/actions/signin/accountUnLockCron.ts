@@ -1,6 +1,6 @@
 "use server";
 
-var cron = require("node-cron");
+import { CronJob } from "cron";
 import { prisma } from "@/lib/prisma/client";
 import Iron from "@hapi/iron";
 import ReadCookieData from "./readCookie";
@@ -8,7 +8,7 @@ import ReadCookieData from "./readCookie";
 const currentTime = new Date();
 const halfLater = new Date();
 
-export const accountUnlock = cron.schedule(
+export const accountUnlock = new CronJob(
   new Date(halfLater.setTime(currentTime.getTime() + 30 * 60 * 1000)),
   async () => {
     try {
