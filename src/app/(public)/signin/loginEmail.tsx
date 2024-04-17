@@ -17,7 +17,7 @@ import Icon from "@mdi/react";
 import styles from "@/styles/signin.module.css";
 import { mdiEmail, mdiLockQuestion, mdiReload } from "@mdi/js";
 
-import { sessionExpiry } from "@/actions/signoff/sessionExpiredCron";
+import SessionExpiry from "@/actions/signoff/sessionExpiredCron";
 
 export default function LoginEmail({
   choose,
@@ -77,7 +77,7 @@ export default function LoginEmail({
       }
     } else {
       resetEmailForm();
-      sessionExpiry.start();
+      SessionExpiry();
       router.replace("/profile");
     }
   };

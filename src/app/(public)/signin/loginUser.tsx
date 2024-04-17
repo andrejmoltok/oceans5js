@@ -17,7 +17,7 @@ import Icon from "@mdi/react";
 import styles from "@/styles/signin.module.css";
 import { mdiAccountCircle, mdiLockQuestion, mdiReload } from "@mdi/js";
 
-import { sessionExpiry } from "@/actions/signoff/sessionExpiredCron";
+import SessionExpiry from "@/actions/signoff/sessionExpiredCron";
 
 export default function LoginUser({
   choose,
@@ -75,7 +75,7 @@ export default function LoginUser({
       }
     } else {
       resetUserForm();
-      sessionExpiry.start();
+      SessionExpiry();
       router.replace("/profile");
     }
   };

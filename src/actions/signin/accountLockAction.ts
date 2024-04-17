@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma/client";
 import Iron from "@hapi/iron";
 import { cookies } from "next/headers";
-import { accountUnlock } from "@/actions/signin/accountUnLockCron";
+import AccountUnLock from "@/actions/signin/accountUnLockCron";
 
 export default async function AccountLockAction({
   username,
@@ -24,18 +24,18 @@ export default async function AccountLockAction({
 
     const queryUserByUsername = queryUsers
       .map((val) => {
-        return val.username.includes(`${username}`) ? val.username : null;
+        return val.username.includes(username as string) ? val.username : null;
       })
       .toString();
     const queryUserByEmail = queryUsers
       .map((val) => {
-        return val.email.includes(`${email}`) ? val.email : null;
+        return val.email.includes(email as string) ? val.email : null;
       })
       .toString();
 
     if (username !== undefined && email === undefined) {
       const userInfo = {
-        username: username,
+        username: queryUserByUsername,
       };
 
       const sealed = await Iron.seal(
@@ -61,10 +61,10 @@ export default async function AccountLockAction({
         },
       });
 
-      await accountUnlock.start();
+      await AccountUnLock();
     } else if (email !== undefined && username === undefined) {
       const userInfo = {
-        email: email,
+        email: queryUserByEmail,
       };
 
       const sealed = await Iron.seal(
@@ -89,7 +89,7 @@ export default async function AccountLockAction({
           lockedAt: new Date(),
         },
       });
-      await accountUnlock.start();
+      await AccountUnLock();
     } else {
       return;
     }

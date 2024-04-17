@@ -1,3 +1,5 @@
+"use server";
+
 import { prisma } from "@/lib/prisma/client";
 import { CronJob } from "cron";
 import ActiveSessionCheck from "./activeSessionCheck";
@@ -8,7 +10,7 @@ const pattern = new Date(
   oneHourLater.setTime(currentTime.getTime() + 60 * 60 * 1000)
 );
 
-export const sessionExpiry = new CronJob(pattern, async () => {
+const sessionExpiry = new CronJob(pattern, async () => {
   try {
     const sessionLoginAt = await ActiveSessionCheck();
 
@@ -47,3 +49,7 @@ export const sessionExpiry = new CronJob(pattern, async () => {
     await prisma.$disconnect();
   }
 });
+
+export default async function SessionExpiry() {
+  sessionExpiry.start();
+}
