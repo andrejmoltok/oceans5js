@@ -12,14 +12,16 @@ const accountUnlock = new CronJob(
   new Date(halfLater.setTime(currentTime.getTime() + 30 * 60 * 1000)),
   async () => {
     try {
-      console.log("Unlock started");
       const cookieData = await ReadCookieData();
       const unsealed: { username?: string; email?: string } = await Iron.unseal(
         cookieData as string,
         process.env.IRONPASS as string,
         Iron.defaults
       );
-      console.log(unsealed.username, unsealed.email);
+      console.log(
+        "Unlocking account for ",
+        unsealed.username ? unsealed.username : unsealed.email
+      );
       if (unsealed.email) {
         await prisma.user.update({
           where: {
