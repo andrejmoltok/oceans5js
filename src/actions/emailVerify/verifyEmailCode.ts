@@ -67,10 +67,12 @@ export default async function VerifyEmailCode({
           usedAt: new Date(),
         },
       });
+      await prisma.$disconnect();
       return {
         success: true,
       };
     } else {
+      await prisma.$disconnect();
       return {
         success: false,
         error: "Code is invalid",
@@ -78,6 +80,7 @@ export default async function VerifyEmailCode({
     }
   } catch (error) {
     console.log(error);
+    await prisma.$disconnect();
     return {
       success: false,
       error: `Unexpected error occured:, ${error}`,
