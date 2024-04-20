@@ -51,7 +51,7 @@ export default async function AccountLockCheck({
       await prisma.$disconnect();
       return true;
     } else {
-      console.log("Can't find record or NOT LockedOut");
+      // console.log("Can't find record or NOT LockedOut");
       await prisma.$disconnect();
       return false;
     }

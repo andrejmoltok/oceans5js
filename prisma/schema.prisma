@@ -66,7 +66,7 @@ model codes {
   id        Int       @id @default(autoincrement()) @db.UnsignedInt
   userID    Int       @db.UnsignedInt
   codeType  String    @db.VarChar(100)
-  code      String    @db.VarChar(100)
+  code      String    @db.VarChar(1000)
   createdAt DateTime  @default(now()) @db.Timestamp(0)
   used      Boolean   @default(false)
   usedAt    DateTime? @db.Timestamp(0)

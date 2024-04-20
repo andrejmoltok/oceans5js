@@ -18,6 +18,8 @@ import {
   mdiShipWheel,
 } from "@mdi/js";
 
+import SendEmailVerification from "@/actions/emailVerify/sendEmailVerification";
+
 export default function Page() {
   const [signUpData, setSignUpData] = React.useState<signUpType>({
     username: "",
@@ -59,8 +61,10 @@ export default function Page() {
     if (createUser.success === false) {
       setDuplicate(createUser.error as string);
     } else {
-      resetForm();
-      //TODO redirect to email verification page for code input
+      await SendEmailVerification({
+        username: signUpData.username,
+        email: signUpData.email,
+      });
     }
   };
 

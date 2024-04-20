@@ -49,7 +49,7 @@ export default async function Create(
           data.password,
           salt,
           async function (error: string, result: string) {
-            await prisma.user.create({
+            const newUser = await prisma.user.create({
               data: {
                 username: data.username,
                 email: data.email,
@@ -59,6 +59,13 @@ export default async function Create(
                 status: "active",
               },
             });
+            const newPlayer = await prisma.player.create({
+              data: {
+                userID: newUser.id,
+                nickname: data.username,
+              },
+            });
+            return newPlayer;
           }
         );
       });
