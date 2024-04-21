@@ -70,6 +70,7 @@ model codes {
   createdAt DateTime  @default(now()) @db.Timestamp(0)
   used      Boolean   @default(false)
   usedAt    DateTime? @db.Timestamp(0)
+  expired   Boolean   @default(false)
   user      user      @relation(fields: [userID], references: [id], onDelete: Cascade, map: "codes_user_FK")
 
   @@index([userID], map: "codes_user_FK")

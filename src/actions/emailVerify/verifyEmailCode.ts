@@ -11,17 +11,23 @@ export default async function VerifyEmailCode({
   emailCode: string;
 }): Promise<{ success: boolean; error?: string }> {
   try {
-    const codeFromDB = await prisma.codes.findFirst({
+    const codeFromDB = await prisma.codes.findMany({
+      orderBy: [
+        {
+          createdAt: "desc",
+        },
+      ],
       where: {
         userID: Number(id),
       },
       select: {
         code: true,
         used: true,
+        expired: true,
       },
     });
     const unsealed = await Iron.unseal(
-      codeFromDB?.code as string,
+      codeFromDB[0]?.code as string,
       process.env.IRONPASS as string,
       Iron.defaults
     );
@@ -30,10 +36,16 @@ export default async function VerifyEmailCode({
       process.env.IRONPASS as string,
       Iron.defaults
     );
-    if (codeFromDB?.used === true) {
+    if (codeFromDB[0]?.used === true) {
       return {
         success: false,
         error: "Code is already used",
+      };
+    }
+    if (codeFromDB[0]?.expired === true) {
+      return {
+        success: false,
+        error: "Code is expired",
       };
     }
     if (unsealed === codeFromEmail) {

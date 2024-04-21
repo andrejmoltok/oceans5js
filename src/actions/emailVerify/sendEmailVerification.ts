@@ -2,8 +2,10 @@
 
 import { prisma } from "@/lib/prisma/client";
 import { nanoid } from "nanoid";
+import { cookies } from "next/headers";
 import Iron from "@hapi/iron";
 import emailjs, { EmailJSResponseStatus } from "@emailjs/nodejs";
+import CodeExpiryStart from "./codeExpiryCron";
 
 export default async function SendEmailVerification({
   username,
@@ -13,6 +15,7 @@ export default async function SendEmailVerification({
   email: string;
 }) {
   try {
+    const cookieStore = cookies();
     const nanoCode = nanoid(64);
     const user = await prisma.user.findUnique({
       where: {
@@ -44,6 +47,13 @@ export default async function SendEmailVerification({
       to_userID: user?.id,
       code: sealedCode,
     });
+    cookieStore.set("codeExpiryByUser", String(user?.id), {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      expires: Date.now() + 24 * 60 * 60 * 1000,
+    });
+    await CodeExpiryStart();
     await prisma.$disconnect();
   } catch (err) {
     if (err instanceof EmailJSResponseStatus) {
