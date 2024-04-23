@@ -78,7 +78,7 @@ export default function LoginEmail({
       }
     } else {
       resetEmailForm();
-      SessionExpiry();
+      await SessionExpiry();
       router.replace("/profile");
     }
   };

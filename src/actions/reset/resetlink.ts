@@ -8,9 +8,9 @@ import emailjs from "@emailjs/nodejs";
 import ResetExpiryCron from "./resetExpiryCron";
 
 export default async function ResetLink({
-  email,
+  userEmail,
 }: {
-  email: string;
+  userEmail: string;
 }): Promise<boolean> {
   try {
     const resetCode = nanoid(64);
@@ -22,7 +22,7 @@ export default async function ResetLink({
     );
     const user = await prisma.user.findFirst({
       where: {
-        email: email,
+        email: userEmail,
       },
       select: {
         username: true,
@@ -33,9 +33,10 @@ export default async function ResetLink({
       publicKey: process.env.EMAILJS_PUBLIC_KEY as string,
       privateKey: process.env.EMAILJS_PRIVATE_KEY as string,
     });
-    emailjs.send("service_bhfmm6g", "template_1jjl0kr", {
+    await emailjs.send("service_bhfmm6g", "template_1jjl0kr", {
       to_name: user?.username,
-      to_email: email,
+      to_email: userEmail,
+      to_id: user?.id,
       code: sealedCode,
     });
     cookieStore.set("resetExpiryByUser", String(user?.id), {

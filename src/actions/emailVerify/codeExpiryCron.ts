@@ -41,6 +41,7 @@ const codeExpiryCron = new CronJob(
           expired: true,
         },
       });
+      cookieStore.delete("codeExpiryByUser");
     } catch (error) {
       console.log("Code Expiry Cron Error: ", error);
     }

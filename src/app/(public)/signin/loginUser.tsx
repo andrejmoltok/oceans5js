@@ -76,7 +76,7 @@ export default function LoginUser({
       }
     } else {
       resetUserForm();
-      SessionExpiry();
+      await SessionExpiry();
       router.replace("/profile");
     }
   };

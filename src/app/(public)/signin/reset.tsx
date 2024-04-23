@@ -15,6 +15,7 @@ import { resetInputType } from "@/lib/reset/resetInputType";
 
 export default function Reset() {
   const [sentSuccess, setSentSuccess] = React.useState<boolean>(false);
+  const [sending, setSending] = React.useState<boolean>(false);
   const [sentError, setSentError] = React.useState<string>("");
   const [emailInput, setEmailInput] = React.useState<resetInputType>({
     email: "",
@@ -48,7 +49,7 @@ export default function Reset() {
       onSuccess: async () => {
         setResetError({});
         setSentError("");
-        const resetSuccess = await ResetLink({ email: data.email });
+        const resetSuccess = await ResetLink({ userEmail: data.email });
         if (resetSuccess === true) {
           setSentSuccess(true);
         } else {
@@ -65,7 +66,7 @@ export default function Reset() {
   return (
     <>
       <div className={styles.main}>
-        <div className={styles.title}>Password Reset</div>
+        <div className={styles.title}>Password Reset Step 1</div>
         <div className={styles.container}>
           <div className={styles.icons}>
             <Icon path={mdiEmail} size={0.8} />
@@ -92,22 +93,43 @@ export default function Reset() {
               placeholder="Enter your email again"
               aria-placeholder="Enter your email again"
             />
-            <div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <input
                 type="submit"
-                value="Send"
+                value={sentSuccess ? "Sent!" : sending ? "Sending..." : "Send"}
                 onClick={(event) => {
                   event?.preventDefault();
                   schemaParse(emailInput);
+                  setSending(true);
                 }}
+                disabled={sentSuccess || sending ? true : false}
               />
               {sentSuccess ? (
-                <Icon
-                  path={mdiCheck}
-                  size={0.7}
-                  title={"Checkmark"}
-                  description={"Reset code sent successfully checkmark"}
-                />
+                <div>
+                  <Icon
+                    path={mdiCheck}
+                    size={0.7}
+                    title={"Checkmark"}
+                    description={"Reset code sent successfully checkmark"}
+                  />
+                </div>
+              ) : sending ? (
+                <div>
+                  <Icon
+                    path={mdiLoading}
+                    size={0.7}
+                    title={"Loading"}
+                    description={"Sending password reset code through email"}
+                    spin
+                  />
+                </div>
               ) : null}
             </div>
           </form>

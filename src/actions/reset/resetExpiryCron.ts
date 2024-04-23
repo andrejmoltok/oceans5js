@@ -41,6 +41,7 @@ const resetExpiryCron = new CronJob(
           expired: true,
         },
       });
+      cookieStore.delete("resetExpiryByUser");
     } catch (error) {
       console.log("Reset Expiry Cron Error: ", error);
       //TODO - send notification to Admin UI
