@@ -15,7 +15,7 @@ const codeExpiryCron = new CronJob(
       const userIDForCodeCookie = Number(
         cookieStore.get("codeExpiryByUser")?.value as string
       );
-      const codeRecordbyUser = await prisma.codes.findMany({
+      const codeRecordByUser = await prisma.codes.findMany({
         where: {
           AND: [
             {
@@ -35,7 +35,7 @@ const codeExpiryCron = new CronJob(
       });
       await prisma.codes.update({
         where: {
-          id: codeRecordbyUser[0]?.id as number,
+          id: codeRecordByUser[0]?.id as number,
         },
         data: {
           expired: true,

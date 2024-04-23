@@ -15,6 +15,7 @@ model user {
   passwordHash  String    @db.VarChar(100)
   firstname     String    @db.VarChar(100)
   lastname      String?   @db.VarChar(100)
+  role          String    @default("player") @db.VarChar(100)
   birthYear     Int?      @default(1934) @db.UnsignedInt
   gender        String?   @db.VarChar(50)
   location      String?   @db.VarChar(100)
@@ -74,4 +75,11 @@ model codes {
   user      user      @relation(fields: [userID], references: [id], onDelete: Cascade, map: "codes_user_FK")
 
   @@index([userID], map: "codes_user_FK")
+}
+
+model notify {
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  location  String   @db.VarChar(200)
+  message   String   @db.LongText
+  createdAt DateTime @default(now()) @db.Timestamp(0)
 }

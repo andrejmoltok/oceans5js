@@ -18,6 +18,7 @@ import styles from "@/styles/signin.module.css";
 import { mdiAccountCircle, mdiLockQuestion, mdiReload } from "@mdi/js";
 
 import SessionExpiry from "@/actions/signoff/sessionExpiredCron";
+import Reset from "./reset";
 
 export default function LoginUser({
   choose,
@@ -30,7 +31,7 @@ export default function LoginUser({
 
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
 
-  const [lockCheck, setLockCheck] = React.useState<boolean>(false);
+  const [loadReset, setLoadReset] = React.useState<boolean>(false);
 
   const [loginUser, setLoginUser] = React.useState<signinUserType>({
     username: "",
@@ -95,7 +96,9 @@ export default function LoginUser({
 
   return (
     <>
-      {loginAttempt === 3 ? (
+      {loadReset ? (
+        <Reset />
+      ) : loginAttempt === 3 ? (
         <AccountLock username={loginUser.username} />
       ) : (
         <>
@@ -168,6 +171,18 @@ export default function LoginUser({
                   </span>{" "}
                   - change login method
                 </div>
+              </div>
+              <div
+                onClick={() => setLoadReset(true)}
+                style={{
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                  padding: "3px",
+                  fontSize: "0.8rem",
+                  cursor: "pointer",
+                }}
+              >
+                Reset password
               </div>
             </form>
           </div>

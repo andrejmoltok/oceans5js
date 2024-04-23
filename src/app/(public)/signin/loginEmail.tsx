@@ -18,6 +18,7 @@ import styles from "@/styles/signin.module.css";
 import { mdiEmail, mdiLockQuestion, mdiReload } from "@mdi/js";
 
 import SessionExpiry from "@/actions/signoff/sessionExpiredCron";
+import Reset from "./reset";
 
 export default function LoginEmail({
   choose,
@@ -30,7 +31,7 @@ export default function LoginEmail({
 
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
 
-  const [lockCheck, setLockCheck] = React.useState<boolean>(false);
+  const [loadReset, setLoadReset] = React.useState<boolean>(false);
 
   const [loginEmail, setLoginEmail] = React.useState<signinEmailType>({
     email: "",
@@ -97,7 +98,9 @@ export default function LoginEmail({
 
   return (
     <>
-      {loginAttempt === 3 ? (
+      {loadReset ? (
+        <Reset />
+      ) : loginAttempt === 3 ? (
         <AccountLock email={loginEmail.email} />
       ) : (
         <>
@@ -173,6 +176,18 @@ export default function LoginEmail({
                       </span>{" "}
                       - change login method
                     </div>
+                  </div>
+                  <div
+                    onClick={() => setLoadReset(true)}
+                    style={{
+                      border: "1px solid black",
+                      borderRadius: "5px",
+                      padding: "3px",
+                      fontSize: "0.8rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Reset password
                   </div>
                 </form>
               </div>
