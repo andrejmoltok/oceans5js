@@ -67,7 +67,9 @@ export default function Page({
           setSaveSuccess(true);
         }
         resetForm();
-        router.push("/signin");
+        setTimeout(() => {
+          router.push("/signin");
+        }, 4000);
       },
       schema: resetPassZodSchema,
     });

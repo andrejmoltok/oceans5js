@@ -22,6 +22,8 @@ export default async function ResetAction({
         AND: [
           {
             userID: Number(userID),
+          },
+          {
             codeType: "reset",
           },
         ],
