@@ -25,6 +25,7 @@ model user {
   lastActive    DateTime? @default(now()) @db.Timestamp(0)
   createdAt     DateTime  @default(now()) @db.Timestamp(0)
   codes         codes[]
+  lobby         lobby[]
   player        player[]
   session       session[]
 }
@@ -82,4 +83,15 @@ model notify {
   location  String   @db.VarChar(200)
   message   String   @db.LongText
   createdAt DateTime @default(now()) @db.Timestamp(0)
+}
+
+model lobby {
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  userID    Int      @db.UnsignedInt
+  username  String   @db.VarChar(100)
+  message   String   @db.LongText
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  user      user     @relation(fields: [userID], references: [id], onDelete: Cascade, map: "lobby_user_FK")
+
+  @@index([userID], map: "lobby_user_FK")
 }
