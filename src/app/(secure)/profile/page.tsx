@@ -2,19 +2,30 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+
 import LogoutAction from "@/actions/signoff/logoutAction";
+import Switch from "@/actions/mfa/switch";
 import FetchUser from "@/actions/user/fetchUser";
 import { User } from "@/actions/user/user";
+
+import styles from "@/styles/mfa.module.css";
+import clsx from "clsx";
 
 export default function Page() {
   const router = useRouter();
   const [user, setUser] = React.useState<User>(null);
+  const [mfaChecked, setMFAChecked] = React.useState<boolean>(false);
   React.useEffect(() => {
     (async () => {
       const fetchedUser = await FetchUser();
       setUser(fetchedUser as User);
     })();
   }, []);
+  React.useEffect(() => {
+    (async () => {
+      await Switch(user?.id as number, mfaChecked);
+    })();
+  }, [user?.id, mfaChecked]);
   return (
     <>
       <div>
@@ -25,8 +36,17 @@ export default function Page() {
           firstname: <span>{user?.firstname}</span>
         </p>
         <p>
-          Multi Factor Authentication Enabled:{" "}
-          <span>{user?.mfaEnabled.toString()}</span>
+          Enable Multi-Factor Authentication:{" "}
+          <label className={styles.switch}>
+            <input
+              type="checkbox"
+              checked={mfaChecked}
+              onClick={() => {
+                setMFAChecked(!mfaChecked);
+              }}
+            ></input>
+            <span className={clsx([styles.slider, styles.round])}></span>
+          </label>
         </p>
         <input
           type="button"

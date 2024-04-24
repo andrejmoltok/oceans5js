@@ -35,6 +35,7 @@ export default function Menu() {
           <li className={styles.listitem}>
             <Link href="/signup">Sign Up</Link>
           </li>
+          {/* Prpofile & SignOUt */}
         </ul>
       </div>
       <div className={styles.spacer}></div>
