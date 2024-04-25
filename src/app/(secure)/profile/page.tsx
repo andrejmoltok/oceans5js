@@ -18,17 +18,15 @@ export default function Page() {
   const [mfacheck, setMFACheck] = React.useState<boolean>(false);
   const [mfaSetting, setMFASetting] = React.useState<boolean>(false);
 
-  React.useMemo(async () => {
-    if (user === null) {
-      const fetchedUser = await FetchUser();
-      setUser(fetchedUser as User);
+  React.useEffect(() => {
+    async function handleMounted() {
+      const fetchedUser = (await FetchUser()) as User;
+      setUser(fetchedUser);
+      const check = await Check(fetchedUser?.id as number);
+      setMFACheck(check as boolean);
     }
-  }, [user]);
-
-  React.useMemo(async () => {
-    const check = await Check(user?.id as number);
-    setMFACheck(check as boolean);
-  }, [user?.id]);
+    handleMounted().catch(console.error);
+  }, []);
 
   const handleMfaToggle = async (id: number, setting: boolean) => {
     await Switch(id, setting);
@@ -48,7 +46,7 @@ export default function Page() {
           <label className={styles.switch}>
             <input
               type="checkbox"
-              checked={mfacheck}
+              defaultChecked={mfacheck}
               onClick={async () => {
                 setMFACheck(!mfacheck);
                 setMFASetting(!mfaSetting);
