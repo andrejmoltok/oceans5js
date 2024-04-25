@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import LogoutAction from "@/actions/signoff/logoutAction";
 import Switch from "@/actions/mfa/switch";
+import Check from "@/actions/mfa/check";
 import FetchUser from "@/actions/user/fetchUser";
 import { User } from "@/actions/user/user";
 
@@ -14,18 +15,25 @@ import clsx from "clsx";
 export default function Page() {
   const router = useRouter();
   const [user, setUser] = React.useState<User>(null);
-  const [mfaChecked, setMFAChecked] = React.useState<boolean>(false);
-  React.useEffect(() => {
-    (async () => {
+  const [mfacheck, setMFACheck] = React.useState<boolean>(false);
+  const [mfaSetting, setMFASetting] = React.useState<boolean>(false);
+
+  React.useMemo(async () => {
+    if (user === null) {
       const fetchedUser = await FetchUser();
       setUser(fetchedUser as User);
-    })();
-  }, []);
-  React.useEffect(() => {
-    (async () => {
-      await Switch(user?.id as number, mfaChecked);
-    })();
-  }, [user?.id, mfaChecked]);
+    }
+  }, [user]);
+
+  React.useMemo(async () => {
+    const check = await Check(user?.id as number);
+    setMFACheck(check as boolean);
+  }, [user?.id]);
+
+  const handleMfaToggle = async (id: number, setting: boolean) => {
+    await Switch(id, setting);
+  };
+
   return (
     <>
       <div>
@@ -40,9 +48,11 @@ export default function Page() {
           <label className={styles.switch}>
             <input
               type="checkbox"
-              checked={mfaChecked}
-              onClick={() => {
-                setMFAChecked(!mfaChecked);
+              checked={mfacheck}
+              onClick={async () => {
+                setMFACheck(!mfacheck);
+                setMFASetting(!mfaSetting);
+                await handleMfaToggle(user?.id as number, mfaSetting);
               }}
             ></input>
             <span className={clsx([styles.slider, styles.round])}></span>
