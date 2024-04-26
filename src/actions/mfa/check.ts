@@ -14,12 +14,8 @@ export default async function Check(
         mfaEnabled: true,
       },
     });
-    if (mfaStatusCheck?.mfaEnabled == true) {
-      return true;
-    } else {
-      return false;
-    }
+    return mfaStatusCheck?.mfaEnabled;
   } catch (error) {
-    console.log("MFA Status Check Error: ", error);
+    console.error("MFA Status Check Error: ", error);
   }
 }

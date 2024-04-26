@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma/client";
 const currentTime = new Date();
 const futureTime = new Date();
 
-const codeExpiryCron = new CronJob(
+export const codeExpiryCron = new CronJob(
   new Date(futureTime.setTime(currentTime.getTime() + 24 * 60 * 60 * 1000)),
   async () => {
     try {
@@ -43,7 +43,7 @@ const codeExpiryCron = new CronJob(
       });
       cookieStore.delete("codeExpiryByUser");
     } catch (error) {
-      console.log("Code Expiry Cron Error: ", error);
+      console.error("Code Expiry Cron Error: ", error);
     }
   }
 );

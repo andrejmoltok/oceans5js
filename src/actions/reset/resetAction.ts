@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma/client";
 import Iron from "@hapi/iron";
+import { resetExpiryCron } from "./resetExpiryCron";
 const bcrypt = require("bcryptjs");
 
 export default async function ResetAction({
@@ -52,6 +53,7 @@ export default async function ResetAction({
     );
 
     if (resetCode[0].used === true) {
+      resetExpiryCron.stop();
       return {
         success: false,
         error: "Reset code is already used",

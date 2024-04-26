@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 const currentTime = new Date();
 const fiveMinsLater = new Date();
 
-const resetExpiryCron = new CronJob(
+export const resetExpiryCron = new CronJob(
   new Date(fiveMinsLater.setTime(currentTime.getTime() + 5 * 60 * 1000)),
   async () => {
     try {
@@ -49,6 +49,6 @@ const resetExpiryCron = new CronJob(
   }
 );
 
-export default async function ResetExpiryCron() {
+export default async function ResetExpiryStart() {
   resetExpiryCron.start();
 }

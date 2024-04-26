@@ -5,7 +5,7 @@ import Iron from "@hapi/iron";
 import { cookies } from "next/headers";
 import { User } from "./user";
 
-export default async function FetchUser(): Promise<User | undefined> {
+export default async function FetchUser(): Promise<User | null> {
   try {
     const cookieStore = cookies();
     const cookie = cookieStore.get("userSession")?.value as string;
@@ -35,5 +35,6 @@ export default async function FetchUser(): Promise<User | undefined> {
     return fetchUser;
   } catch (error) {
     console.log("FetchUser Erro: ", error);
+    return null;
   }
 }

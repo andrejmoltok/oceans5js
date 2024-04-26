@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma/client";
 import Iron from "@hapi/iron";
+import { codeExpiryCron } from "./codeExpiryCron";
 
 export default async function VerifyEmailCode({
   id,
@@ -37,6 +38,7 @@ export default async function VerifyEmailCode({
       Iron.defaults
     );
     if (codeFromDB[0]?.used === true) {
+      codeExpiryCron.stop();
       return {
         success: false,
         error: "Code is already used",

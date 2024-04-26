@@ -14,7 +14,7 @@ import clsx from "clsx";
 
 export default function Page() {
   const router = useRouter();
-  const [user, setUser] = React.useState<User>(null);
+  const [user, setUser] = React.useState<User>();
   const [mfacheck, setMFACheck] = React.useState<boolean>(false);
   const [mfaSetting, setMFASetting] = React.useState<boolean>(false);
 
