@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 import LogoutAction from "@/actions/signoff/logoutAction";
 import Switch from "@/actions/mfa/switch";
-import Check from "@/actions/mfa/check";
 import FetchUser from "@/actions/user/fetchUser";
 import { User } from "@/actions/user/user";
 
@@ -14,7 +13,7 @@ import clsx from "clsx";
 
 export default function Page() {
   const router = useRouter();
-  const [user, setUser] = React.useState<User>();
+  const [user, setUser] = React.useState<User>(null);
   const [mfacheck, setMFACheck] = React.useState<boolean>(false);
   const [mfaSetting, setMFASetting] = React.useState<boolean>(false);
 
@@ -22,8 +21,7 @@ export default function Page() {
     async function handleMounted() {
       const fetchedUser = (await FetchUser()) as User;
       setUser(fetchedUser);
-      const check = await Check(fetchedUser?.id as number);
-      setMFACheck(check as boolean);
+      setMFACheck(fetchedUser?.mfaEnabled as boolean);
     }
     handleMounted().catch(console.error);
   }, []);
@@ -46,10 +44,12 @@ export default function Page() {
           <label className={styles.switch}>
             <input
               type="checkbox"
-              defaultChecked={mfacheck}
-              onClick={async () => {
+              checked={mfacheck}
+              onChange={() => {
                 setMFACheck(!mfacheck);
                 setMFASetting(!mfaSetting);
+              }}
+              onClick={async () => {
                 await handleMfaToggle(user?.id as number, mfaSetting);
               }}
             ></input>
