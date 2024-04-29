@@ -1,0 +1,5 @@
+1. [[Lobby]]
+3. [[Leaderboard]]
+4. [[How to play]]
+5. [[About]]
+6. [[Auth]]

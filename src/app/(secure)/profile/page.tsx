@@ -23,7 +23,7 @@ export default function Page() {
       setUser(fetchedUser);
       setMFACheck(fetchedUser?.mfaEnabled as boolean);
     }
-    handleMounted().catch(console.error);
+    handleMounted().catch((error) => console.error(error));
   }, []);
 
   const handleMfaToggle = async (id: number, setting: boolean) => {
