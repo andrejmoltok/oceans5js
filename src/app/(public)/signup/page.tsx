@@ -83,20 +83,20 @@ export default function Page() {
 
   return (
     <>
-      <div className={styles.main}>
-        <div className={styles.wheel}>
+      <section className={styles.main}>
+        <section className={styles.wheel}>
           <h2>Register Your Player Account</h2>
           <Icon path={mdiShipWheel} size={0.8} />
-        </div>
-        <div className={styles.container}>
-          <div className={styles.icons}>
+        </section>
+        <section className={styles.container}>
+          <section className={styles.icons}>
             <Icon path={mdiAccountCircle} size={0.8} />
             <Icon path={mdiEmail} size={0.8} />
             <Icon path={mdiFountainPen} size={0.8} />
             <Icon path={mdiFountainPen} size={0.8} />
             <Icon path={mdiLockQuestion} size={0.8} />
             <Icon path={mdiLockQuestion} size={0.8} />
-          </div>
+          </section>
           <form className={styles.form} aria-label="Register player account">
             <label htmlFor="username">
               Username:<span style={{ color: "red" }}>*</span>
@@ -169,8 +169,8 @@ export default function Page() {
               <span style={{ color: "red" }}>*</span> - marked as compulsory
             </div>
           </form>
-        </div>
-        <div className={styles.errors}>
+        </section>
+        <section className={styles.errors}>
           {errors && errors.username && (
             <div style={{ color: "red" }}>Username - {errors.username}</div>
           )}
@@ -189,8 +189,8 @@ export default function Page() {
           {errors && errors.confirm && (
             <div style={{ color: "red" }}>Confirm - {errors.confirm}</div>
           )}
-        </div>
-      </div>
+        </section>
+      </section>
     </>
   );
 }

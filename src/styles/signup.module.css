@@ -1,4 +1,7 @@
 .main {
+  margin-top: 5px;
+  max-height: 585px;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,4 +51,5 @@
   align-items: center;
   justify-content: center;
   max-width: 500px;
+  height: 87px;
 }
