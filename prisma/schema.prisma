@@ -8,27 +8,31 @@ datasource db {
 }
 
 model user {
-  id            Int       @id @default(autoincrement()) @db.UnsignedInt
-  username      String    @unique(map: "user_unique_1") @db.VarChar(100)
-  email         String    @unique(map: "user_unique") @db.VarChar(100)
-  emailVerified Boolean   @default(false)
-  passwordHash  String    @db.VarChar(100)
-  firstname     String    @db.VarChar(100)
-  lastname      String?   @db.VarChar(100)
-  role          String    @default("player") @db.VarChar(100)
-  birthYear     Int?      @default(1934) @db.UnsignedInt
-  gender        String?   @db.VarChar(50)
-  location      String?   @db.VarChar(100)
-  status        String    @db.VarChar(100)
-  lockedAt      DateTime? @db.Timestamp(0)
-  mfaEnabled    Boolean   @default(false)
-  mfaSecret     String?   @db.VarChar(500)
-  lastActive    DateTime? @default(now()) @db.Timestamp(0)
-  createdAt     DateTime  @default(now()) @db.Timestamp(0)
-  codes         codes[]
-  lobby         lobby[]
-  player        player[]
-  session       session[]
+  id                        Int       @id @default(autoincrement()) @db.UnsignedInt
+  username                  String    @unique(map: "user_unique_1") @db.VarChar(100)
+  email                     String    @unique(map: "user_unique") @db.VarChar(100)
+  emailVerified             Boolean   @default(false)
+  passwordHash              String    @db.VarChar(100)
+  firstname                 String    @db.VarChar(100)
+  lastname                  String?   @db.VarChar(100)
+  role                      String    @default("player") @db.VarChar(100)
+  birthYear                 Int?      @default(1934) @db.UnsignedInt
+  gender                    String?   @db.VarChar(50)
+  location                  String?   @db.VarChar(100)
+  status                    String    @db.VarChar(100)
+  lockedAt                  DateTime? @db.Timestamp(0)
+  mfaEnabled                Boolean   @default(false)
+  mfaSecret                 String?   @db.VarChar(500)
+  lastActive                DateTime? @default(now()) @db.Timestamp(0)
+  createdAt                 DateTime  @default(now()) @db.Timestamp(0)
+  codes                     codes[]
+  games_games_player1Touser games[]   @relation("games_player1Touser")
+  games_games_player2Touser games[]   @relation("games_player2Touser")
+  games_games_winnerTouser  games[]   @relation("games_winnerTouser")
+  lobby                     lobby[]
+  moves                     moves[]
+  player                    player[]
+  session                   session[]
 }
 
 model session {
@@ -95,4 +99,37 @@ model lobby {
   user      user     @relation(fields: [userID], references: [id], onDelete: Cascade, map: "lobby_user_FK")
 
   @@index([userID], map: "lobby_user_FK")
+}
+
+model games {
+  id                       Int       @id @default(autoincrement()) @db.UnsignedInt
+  player1                  Int       @db.UnsignedInt
+  player2                  Int       @db.UnsignedInt
+  winner                   Int       @db.UnsignedInt
+  status                   String    @db.VarChar(50)
+  startedAt                DateTime  @default(now()) @db.Timestamp(0)
+  endedAt                  DateTime? @db.Timestamp(0)
+  user_games_player1Touser user      @relation("games_player1Touser", fields: [player1], references: [id], onUpdate: Restrict, map: "games_user_FK")
+  user_games_player2Touser user      @relation("games_player2Touser", fields: [player2], references: [id], onUpdate: Restrict, map: "games_user_FK_1")
+  user_games_winnerTouser  user      @relation("games_winnerTouser", fields: [winner], references: [id], onUpdate: Restrict, map: "games_user_FK_2")
+  moves                    moves[]
+
+  @@index([player1], map: "games_user_FK")
+  @@index([player2], map: "games_user_FK_1")
+  @@index([winner], map: "games_user_FK_2")
+}
+
+model moves {
+  id       Int    @id @default(autoincrement()) @db.UnsignedInt
+  gameID   Int    @db.UnsignedInt
+  playerID Int    @db.UnsignedInt
+  turn     Int    @db.UnsignedInt
+  action   String @db.VarChar(100)
+  x        Int    @db.UnsignedInt
+  y        String @db.VarChar(1)
+  games    games  @relation(fields: [gameID], references: [id], onUpdate: Restrict, map: "moves_games_FK")
+  user     user   @relation(fields: [playerID], references: [id], onUpdate: Restrict, map: "moves_user_FK")
+
+  @@index([gameID], map: "moves_games_FK")
+  @@index([playerID], map: "moves_user_FK")
 }
