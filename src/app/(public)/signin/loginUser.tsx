@@ -101,21 +101,21 @@ export default function LoginUser({
       ) : loginAttempt === 3 ? (
         <AccountLock username={loginUser.username} />
       ) : (
-        <>
-          <div className={styles.wheel}>
+        <section className={styles.main}>
+          <section className={styles.wheel}>
             <div className={styles.title}>Login with Username</div>
             <ChooseButton
               choose={choose}
               setChoose={setChoose}
               resetUserForm={resetUserForm}
             />
-          </div>
-          <div className={styles.container}>
-            <div className={styles.icons}>
+          </section>
+          <section className={styles.container}>
+            <section className={styles.icons}>
               <Icon path={mdiAccountCircle} size={0.8} />
               <Icon path={mdiLockQuestion} size={0.8} />
               <Icon path={mdiLockQuestion} size={0.8} />
-            </div>
+            </section>
             <form className={styles.form}>
               <label htmlFor="username">
                 Username:<span style={{ color: "red" }}>*</span>
@@ -185,8 +185,8 @@ export default function LoginUser({
                 Reset password
               </div>
             </form>
-          </div>
-          <div className={styles.error}>
+          </section>
+          <section className={styles.error}>
             {loginAttempt > 0 && (
               <div style={{ color: "red" }}>
                 Failed login attempts: {loginAttempt} of 3
@@ -206,8 +206,8 @@ export default function LoginUser({
               <div style={{ color: "red" }}>Confirm - {userErrors.confirm}</div>
             )}
             {loginError && <div style={{ color: "red" }}>{loginError}</div>}
-          </div>
-        </>
+          </section>
+        </section>
       )}
     </>
   );

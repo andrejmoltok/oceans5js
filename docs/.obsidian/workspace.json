@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Menu.md",
+                "file": "Lobby.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Menu.md",
+                "file": "Lobby.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Menu.md",
+                "file": "Lobby.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Menu.md"
+                "file": "Lobby.md"
               }
             }
           }
@@ -161,7 +161,7 @@
   },
   "active": "a631d987ac41cf56",
   "lastOpenFiles": [
-    "Lobby.md",
-    "Menu.md"
+    "Menu.md",
+    "Lobby.md"
   ]
 }
