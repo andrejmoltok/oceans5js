@@ -16,7 +16,7 @@
 12. [Speakeasy(MFA/TOTP)](https://www.npmjs.com/package/speakeasy)
 13. [EmailJS](https://emailjs.com) - REPLACE THIS WQITH [LOOPS.SO](https://loops.so/) AFTER DOMAIN REGISTRATION
 14. [Cron](https://www.npmjs.com/package/cron)
-15. [Jotai](https://jotai.org)
+15. [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
 16. [Tanstack-React-Query](https://www.tanstack.com)
 
 _right-click the links to open in new tab_
