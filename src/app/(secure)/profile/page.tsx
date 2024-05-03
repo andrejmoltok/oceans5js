@@ -3,6 +3,8 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 
+import useSecretStore from "@/lib/mfa/secretStore";
+
 import LogoutAction from "@/actions/signoff/logoutAction";
 import Switch from "@/actions/mfa/switch";
 import FetchUser from "@/actions/user/fetchUser";
@@ -10,9 +12,11 @@ import { User } from "@/actions/user/user";
 
 import styles from "@/styles/mfa.module.css";
 import clsx from "clsx";
+import MFASecret from "@/actions/mfa/mfaSecret";
 
 export default function Page() {
   const router = useRouter();
+  const [secret, setSecret] = React.useState<object>();
   const [user, setUser] = React.useState<User>(null);
   const [mfacheck, setMFACheck] = React.useState<boolean>(false);
   const [mfaSetting, setMFASetting] = React.useState<boolean>(false);
@@ -25,6 +29,8 @@ export default function Page() {
     }
     handleMounted().catch((error) => console.error(error));
   }, []);
+
+  console.log(user);
 
   const handleMfaToggle = async (id: number, setting: boolean) => {
     await Switch(id, setting);
