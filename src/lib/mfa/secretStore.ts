@@ -7,15 +7,12 @@ type MFASecret = {
   delete: () => void;
 };
 
-const useSecretStore = create<MFASecret>()((set) => ({
+const useSecretStore = create<MFASecret>((set) => ({
   secret: {},
 
-  add: () =>
-    set((state) => {
-      secret: state.secret;
-    }),
+  add: (secret: object): void => set(() => ({ secret: secret })),
 
-  delete: () => set(() => ({ secret: {} })),
+  delete: (): void => set(() => ({ secret: {} })),
 }));
 
 export default useSecretStore;

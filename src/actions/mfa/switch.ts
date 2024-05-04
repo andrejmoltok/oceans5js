@@ -9,7 +9,7 @@ export default async function Switch(id: number, checked: boolean) {
         id: id,
       },
       data: {
-        mfaEnabled: checked as boolean,
+        mfaEnabled: checked,
       },
     });
     await prisma.$disconnect();

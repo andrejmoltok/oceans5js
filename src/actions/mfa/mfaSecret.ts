@@ -4,7 +4,8 @@ var speakeasy = require("speakeasy");
 
 export default async function MFASecret() {
   try {
-    return speakeasy.generateSecret();
+    const secretObj = speakeasy.generateSecret();
+    return secretObj;
   } catch (error) {
     console.error(error);
   }

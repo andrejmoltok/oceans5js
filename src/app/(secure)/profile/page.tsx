@@ -16,7 +16,7 @@ import MFASecret from "@/actions/mfa/mfaSecret";
 
 export default function Page() {
   const router = useRouter();
-  const [secret, setSecret] = React.useState<object>();
+  const { secret } = useSecretStore();
   const [user, setUser] = React.useState<User>(null);
   const [mfacheck, setMFACheck] = React.useState<boolean>(false);
   const [mfaSetting, setMFASetting] = React.useState<boolean>(false);
@@ -26,11 +26,15 @@ export default function Page() {
       const fetchedUser = (await FetchUser()) as User;
       setUser(fetchedUser);
       setMFACheck(fetchedUser?.mfaEnabled as boolean);
+      setMFASetting(fetchedUser?.mfaEnabled as boolean);
     }
     handleMounted().catch((error) => console.error(error));
   }, []);
 
   console.log(user);
+
+  const handleGenerateSecret = useSecretStore((state) => state.add);
+  const handleDeleteSecret = useSecretStore((state) => state.delete);
 
   const handleMfaToggle = async (id: number, setting: boolean) => {
     await Switch(id, setting);
@@ -51,9 +55,9 @@ export default function Page() {
             <input
               type="checkbox"
               checked={mfacheck}
-              onChange={() => {
-                setMFACheck(!mfacheck);
-                setMFASetting(!mfaSetting);
+              onChange={async () => {
+                setMFACheck((mfacheck) => mfacheck);
+                setMFASetting((mfaSetting) => mfaSetting);
               }}
               onClick={async () => {
                 await handleMfaToggle(user?.id as number, mfaSetting);
