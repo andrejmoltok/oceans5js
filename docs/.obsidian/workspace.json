@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "d6f37c3a5ee39575",
+        "id": "551af75a90e952f6",
         "type": "tabs",
         "children": [
           {
-            "id": "bb9df32c75ccb999",
+            "id": "a9d48e2dee4f244a",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -138,11 +138,11 @@
       "command-palette:Parancspaletta megnyitása": false
     }
   },
-  "active": "bb9df32c75ccb999",
+  "active": "a9d48e2dee4f244a",
   "lastOpenFiles": [
+    "Gameplay.md",
     "Lobby.md",
-    "Menu.md",
     "Auth.md",
-    "Gameplay.md"
+    "Menu.md"
   ]
 }
