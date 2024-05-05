@@ -6,6 +6,6 @@ Renders chat interface with chatbox, userlist on the right side, command panel t
    1. "Game replays are stored in the database."
       1. "Replays include moves recorded with the corresponding `gameID` and `playerID`, along with the action type and coordinates."
    2. "Games can be saved to resume later."
-   3. "The database includes a status field for games, indicating whether they are 'in progress,' 'saved,' or 'replay.'
+   3. "The database includes a status field for games, indicating whether they are `in progress`, `saved`, or `replay`."
    4. "Invitations can be sent by clicking on a player's name in the player list, triggering the display of a command panel with available options."
 3. [[Gameplay]]
