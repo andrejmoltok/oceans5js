@@ -55,11 +55,10 @@ export default function Page() {
             <input
               type="checkbox"
               checked={mfacheck}
-              onChange={async () => {
-                setMFACheck((mfacheck) => mfacheck);
-                setMFASetting((mfaSetting) => mfaSetting);
-              }}
+              onChange={async () => {}}
               onClick={async () => {
+                setMFACheck((mfacheck) => !mfacheck);
+                setMFASetting((mfaSetting) => !mfaSetting);
                 await handleMfaToggle(user?.id as number, mfaSetting);
               }}
             ></input>

@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "a0f83583e4a855ea",
+        "id": "2e381cdab29b16fb",
         "type": "tabs",
         "children": [
           {
-            "id": "c2c6201e4cb8b1a4",
+            "id": "5edba764ff794ed5",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "How to play.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "How to play.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +97,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "How to play.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -124,9 +118,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "How to play.md"
-              }
+              "state": {}
             }
           }
         ]
@@ -146,10 +138,10 @@
       "command-palette:Parancspaletta megnyitása": false
     }
   },
-  "active": "c2c6201e4cb8b1a4",
+  "active": "5edba764ff794ed5",
   "lastOpenFiles": [
-    "Menu.md",
     "How to play.md",
+    "Menu.md",
     "Gameplay.md",
     "Lobby.md",
     "Auth.md"
