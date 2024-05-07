@@ -65,15 +65,13 @@ export default function Reset() {
 
   return (
     <>
-      <div className={styles.main}>
+      <section className={styles.main}>
         <div className={styles.title}>Password Reset Step 1</div>
         <div className={styles.container}>
-          <div className={styles.icons}>
-            <Icon path={mdiEmail} size={0.8} />
-            <Icon path={mdiEmail} size={0.8} />
-          </div>
           <form className={styles.form}>
-            <label htmlFor="email">Email: </label>
+            <label htmlFor="email">
+              <Icon path={mdiEmail} size={0.8} /> Email:{" "}
+            </label>
             <input
               type="text"
               id="email"
@@ -83,7 +81,9 @@ export default function Reset() {
               placeholder="Enter your email"
               aria-placeholder="Enter your email"
             />
-            <label htmlFor="confirm">Confirm: </label>
+            <label htmlFor="confirm">
+              <Icon path={mdiEmail} size={0.8} /> Confirm:{" "}
+            </label>
             <input
               type="text"
               id="confirm"
@@ -140,7 +140,7 @@ export default function Reset() {
           )}
           {sentError && <div style={{ color: "red" }}>{sentError}</div>}
         </div>
-      </div>
+      </section>
     </>
   );
 }

@@ -77,15 +77,13 @@ export default function Page({
 
   return (
     <>
-      <div className={styles.main}>
+      <section className={styles.main}>
         <div className={styles.title}>Password Reset Step 2</div>
         <div className={styles.container}>
-          <div className={styles.icons}>
-            <Icon path={mdiLockQuestion} size={0.8} />
-            <Icon path={mdiLockQuestion} size={0.8} />
-          </div>
           <form className={styles.form}>
-            <label htmlFor="email">Password: </label>
+            <label htmlFor="email">
+              <Icon path={mdiLockQuestion} size={0.8} /> Password:{" "}
+            </label>
             <input
               type="password"
               id="password"
@@ -95,7 +93,9 @@ export default function Page({
               placeholder="Enter your password"
               aria-placeholder="Enter your password"
             />
-            <label htmlFor="confirm">Confirm: </label>
+            <label htmlFor="confirm">
+              <Icon path={mdiLockQuestion} size={0.8} /> Confirm:{" "}
+            </label>
             <input
               type="password"
               id="confirm"
@@ -152,7 +152,7 @@ export default function Page({
           )}
           {saveError && <div style={{ color: "red" }}>{saveError}</div>}
         </div>
-      </div>
+      </section>
     </>
   );
 }
