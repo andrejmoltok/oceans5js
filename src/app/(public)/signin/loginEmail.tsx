@@ -113,14 +113,10 @@ export default function LoginEmail({
             />
           </section>
           <section className={styles.container}>
-            <section className={styles.icons}>
-              <Icon path={mdiEmail} size={0.8} />
-              <Icon path={mdiLockQuestion} size={0.8} />
-              <Icon path={mdiLockQuestion} size={0.8} />
-            </section>
             <form className={styles.form}>
               <label htmlFor="email">
-                Email:<span style={{ color: "red" }}>*</span>
+                <Icon path={mdiEmail} size={0.8} /> Email:
+                <span style={{ color: "red" }}>*</span>
               </label>
               <input
                 type="email"
@@ -132,7 +128,8 @@ export default function LoginEmail({
                 placeholder="email"
               />
               <label htmlFor="password">
-                Password:<span style={{ color: "red" }}>*</span>
+                <Icon path={mdiLockQuestion} size={0.8} /> Password:
+                <span style={{ color: "red" }}>*</span>
               </label>
               <input
                 type="password"
@@ -144,7 +141,8 @@ export default function LoginEmail({
                 placeholder="password"
               />
               <label htmlFor="confirm">
-                Confirm:<span style={{ color: "red" }}>*</span>
+                <Icon path={mdiLockQuestion} size={0.8} /> Confirm:
+                <span style={{ color: "red" }}>*</span>
               </label>
               <input
                 type="password"

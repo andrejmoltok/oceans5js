@@ -30,19 +30,26 @@
   background-color: #0c1446;
 }
 
-.icons {
+/* .icons {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   gap: 35.5px;
-}
+} */
 
 .form {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+}
+
+.form > input,
+.form > button {
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
 }
 
 .errors {

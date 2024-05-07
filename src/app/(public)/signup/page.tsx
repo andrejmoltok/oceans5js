@@ -84,22 +84,15 @@ export default function Page() {
   return (
     <>
       <section className={styles.main}>
-        <section className={styles.wheel}>
+        <div className={styles.wheel}>
           <h2>Register Your Player Account</h2>
           <Icon path={mdiShipWheel} size={0.8} />
-        </section>
+        </div>
         <section className={styles.container}>
-          <section className={styles.icons}>
-            <Icon path={mdiAccountCircle} size={0.8} />
-            <Icon path={mdiEmail} size={0.8} />
-            <Icon path={mdiFountainPen} size={0.8} />
-            <Icon path={mdiFountainPen} size={0.8} />
-            <Icon path={mdiLockQuestion} size={0.8} />
-            <Icon path={mdiLockQuestion} size={0.8} />
-          </section>
           <form className={styles.form} aria-label="Register player account">
             <label htmlFor="username">
-              Username:<span style={{ color: "red" }}>*</span>
+              <Icon path={mdiAccountCircle} size={0.8} /> Username:
+              <span style={{ color: "red" }}>*</span>
             </label>
             <input
               name="username"
@@ -109,7 +102,8 @@ export default function Page() {
               onChange={handleInputChange}
             />
             <label htmlFor="email">
-              Email:<span style={{ color: "red" }}>*</span>
+              <Icon path={mdiEmail} size={0.8} /> Email:
+              <span style={{ color: "red" }}>*</span>
             </label>
             <input
               name="email"
@@ -119,7 +113,8 @@ export default function Page() {
               onChange={handleInputChange}
             />
             <label htmlFor="firstname">
-              Firstname:<span style={{ color: "red" }}>*</span>
+              <Icon path={mdiFountainPen} size={0.8} /> Firstname:
+              <span style={{ color: "red" }}>*</span>
             </label>
             <input
               name="firstname"
@@ -128,7 +123,9 @@ export default function Page() {
               value={signUpData.firstname}
               onChange={handleInputChange}
             />
-            <label htmlFor="lastname">Lastname:</label>
+            <label htmlFor="lastname">
+              <Icon path={mdiFountainPen} size={0.8} /> Lastname:
+            </label>
             <input
               name="lastname"
               type="text"
@@ -137,7 +134,8 @@ export default function Page() {
               onChange={handleInputChange}
             />
             <label htmlFor="password">
-              Password:<span style={{ color: "red" }}>*</span>
+              <Icon path={mdiLockQuestion} size={0.8} /> Password:
+              <span style={{ color: "red" }}>*</span>
             </label>
             <input
               name="password"
@@ -147,7 +145,8 @@ export default function Page() {
               onChange={handleInputChange}
             />
             <label htmlFor="confirm">
-              Confirm:<span style={{ color: "red" }}>*</span>
+              <Icon path={mdiLockQuestion} size={0.8} /> Confirm:
+              <span style={{ color: "red" }}>*</span>
             </label>
             <input
               name="confirm"

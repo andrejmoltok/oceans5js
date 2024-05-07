@@ -111,14 +111,10 @@ export default function LoginUser({
             />
           </section>
           <section className={styles.container}>
-            <section className={styles.icons}>
-              <Icon path={mdiAccountCircle} size={0.8} />
-              <Icon path={mdiLockQuestion} size={0.8} />
-              <Icon path={mdiLockQuestion} size={0.8} />
-            </section>
             <form className={styles.form}>
               <label htmlFor="username">
-                Username:<span style={{ color: "red" }}>*</span>
+                <Icon path={mdiAccountCircle} size={0.8} /> Username:
+                <span style={{ color: "red" }}>*</span>
               </label>
               <input
                 type="text"
@@ -130,7 +126,8 @@ export default function LoginUser({
                 placeholder="username"
               />
               <label htmlFor="password">
-                Password:<span style={{ color: "red" }}>*</span>
+                <Icon path={mdiLockQuestion} size={0.8} /> Password:
+                <span style={{ color: "red" }}>*</span>
               </label>
               <input
                 type="password"
@@ -142,6 +139,7 @@ export default function LoginUser({
                 placeholder="password"
               />
               <label htmlFor="confirm">
+                <Icon path={mdiLockQuestion} size={0.8} />
                 Confirm:<span style={{ color: "red" }}>*</span>
               </label>
               <input
