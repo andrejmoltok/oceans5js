@@ -21,15 +21,19 @@ export default function Page() {
   const [mfacheck, setMFACheck] = React.useState<boolean>(false);
   const [mfaSetting, setMFASetting] = React.useState<boolean>(false);
 
+  // TODO - change to TanstackQuery
   React.useEffect(() => {
     async function handleMounted() {
       const fetchedUser = (await FetchUser()) as User;
       setUser(fetchedUser);
-      setMFACheck(fetchedUser?.mfaEnabled as boolean);
-      setMFASetting(fetchedUser?.mfaEnabled as boolean);
     }
     handleMounted().catch((error) => console.error(error));
   }, []);
+
+  if (user !== null) {
+    setMFACheck(user?.mfaEnabled as boolean);
+    setMFASetting(user?.mfaEnabled as boolean);
+  }
 
   console.log(user);
 
@@ -54,12 +58,17 @@ export default function Page() {
           <label className={styles.switch}>
             <input
               type="checkbox"
-              checked={mfacheck}
-              onChange={async () => {}}
+              defaultChecked={mfacheck}
               onClick={async () => {
-                setMFACheck((mfacheck) => !mfacheck);
-                setMFASetting((mfaSetting) => !mfaSetting);
-                await handleMfaToggle(user?.id as number, mfaSetting);
+                setMFACheck(!mfacheck);
+                console.log(mfacheck);
+                setMFASetting(!mfaSetting);
+                console.log(mfaSetting);
+                await handleMfaToggle(
+                  user?.id as number,
+                  mfaSetting as boolean
+                );
+                console.log(user?.id, mfaSetting);
               }}
             ></input>
             <span className={clsx([styles.slider, styles.round])}></span>
