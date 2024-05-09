@@ -22,15 +22,15 @@ const sessionExpiry = new CronJob(pattern, async () => {
 
     const loginSecond = sessionLoginAt?.loginAt.getSeconds();
 
-    const isOneHourLater =
-      currentHour === (loginHour as number) + 1 &&
+    const isOneHourLaterOrGreater =
+      currentHour >= (loginHour as number) + 1 &&
       currentMinute >= (loginMinute as number);
 
     const newDateSetMinutes = new Date();
     newDateSetMinutes.setMinutes(loginMinute as number);
     newDateSetMinutes.setSeconds(loginSecond as number);
 
-    if (isOneHourLater) {
+    if (isOneHourLaterOrGreater) {
       console.log("1 hour timeout for session no.: ", sessionLoginAt?.id);
       await prisma.session.update({
         where: { id: sessionLoginAt?.id },
