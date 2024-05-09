@@ -23,8 +23,9 @@ const sessionExpiry = new CronJob(pattern, async () => {
     const loginSecond = sessionLoginAt?.loginAt.getSeconds();
 
     const isOneHourLaterOrGreater =
-      currentHour >= (loginHour as number) + 1 &&
-      currentMinute >= (loginMinute as number);
+      currentHour > (loginHour as number) + 1 ||
+      (currentHour === (loginHour as number) + 1 &&
+        currentMinute >= (loginMinute as number));
 
     const newDateSetMinutes = new Date();
     newDateSetMinutes.setMinutes(loginMinute as number);
