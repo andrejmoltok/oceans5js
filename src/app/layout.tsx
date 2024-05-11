@@ -15,14 +15,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <QPC>
-      <html lang="en">
-        <body>
-          <Menu />
-          {children}
-          <Footer />
-        </body>
-      </html>
-    </QPC>
+    <>
+      <QPC>
+        <html lang="en">
+          <body>
+            <Menu />
+            {children}
+            <Footer />
+          </body>
+        </html>
+      </QPC>
+    </>
   );
 }
