@@ -8,15 +8,17 @@ export default async function LogoutAction(): Promise<void> {
     const cookieStore = cookies();
     const cookieValue = cookieStore.get("userSession")?.value;
 
-    await prisma.session.update({
-      where: {
-        sessionData: cookieValue,
-      },
-      data: {
-        logoutAt: new Date(),
-        status: "loggedOut",
-      },
-    });
+    if (cookieValue) {
+      await prisma.session.update({
+        where: {
+          sessionData: cookieValue,
+        },
+        data: {
+          logoutAt: new Date(),
+          status: "loggedOut",
+        },
+      });
+    }
 
     cookieStore.delete("userSession");
 

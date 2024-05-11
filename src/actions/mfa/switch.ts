@@ -9,12 +9,11 @@ export default async function Switch(id: number, checked: boolean) {
         id: id,
       },
       data: {
-        mfaEnabled: checked,
+        mfaEnabled: checked as boolean,
       },
     });
-    await prisma.$disconnect();
   } catch (error) {
     console.log("MFA Switch Error: ", error);
-    await prisma.$disconnect();
   }
+  await prisma.$disconnect();
 }
