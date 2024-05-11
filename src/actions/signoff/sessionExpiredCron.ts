@@ -41,7 +41,7 @@ const sessionExpiry = new CronJob(pattern, async () => {
         },
       });
     } else {
-      console.log(`Session ${sessionLoginAt?.id} still active...`);
+      console.log(`Session ended before expiry`);
     }
 
     await prisma.$disconnect();
