@@ -10,7 +10,6 @@ import styles from "@/styles/mfa.module.css";
 import clsx from "clsx";
 
 export default function MFA({ fetchedUser }: { fetchedUser: User }) {
-  const [mfaSetting, setMFASetting] = React.useState<boolean>(false);
   const [mfaCheckBox, setMFACheckBox] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -20,7 +19,6 @@ export default function MFA({ fetchedUser }: { fetchedUser: User }) {
   }, [fetchedUser]);
 
   const mfaToggle = async (id: number, setting: boolean) => {
-    console.log(id, setting);
     await Switch(id, setting);
   };
 
@@ -31,7 +29,7 @@ export default function MFA({ fetchedUser }: { fetchedUser: User }) {
 
   return (
     <section>
-      Enable Multi-Factor Authentication:{" "}
+      Multi-Factor Authentication: {mfaCheckBox ? "Enabled" : "Disabled"}{" "}
       <label className={styles.switch}>
         <input
           type="checkbox"
@@ -39,7 +37,6 @@ export default function MFA({ fetchedUser }: { fetchedUser: User }) {
           onChange={() => {
             handleMFAToggle();
           }}
-          onClick={() => {}}
         ></input>
         <span className={clsx([styles.slider, styles.round])}></span>
       </label>
