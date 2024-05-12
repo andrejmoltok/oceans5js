@@ -25,8 +25,9 @@ export default function MFA({ fetchedUser }: { fetchedUser: User }) {
   };
 
   const handleMFAToggle = React.useCallback(async () => {
-    await mfaToggle(fetchedUser?.id as number, mfaSetting);
-  }, [fetchedUser?.id, mfaSetting]);
+    await mfaToggle(fetchedUser?.id as number, !mfaCheckBox);
+    setMFACheckBox(!mfaCheckBox);
+  }, [fetchedUser?.id, mfaCheckBox]);
 
   return (
     <section>
@@ -38,10 +39,7 @@ export default function MFA({ fetchedUser }: { fetchedUser: User }) {
           onChange={() => {
             handleMFAToggle();
           }}
-          onClick={() => {
-            setMFASetting(!mfaSetting);
-            setMFACheckBox(!mfaCheckBox);
-          }}
+          onClick={() => {}}
         ></input>
         <span className={clsx([styles.slider, styles.round])}></span>
       </label>
