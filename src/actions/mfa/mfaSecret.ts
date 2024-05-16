@@ -8,5 +8,6 @@ export default async function MFASecret() {
     return secretObj;
   } catch (error) {
     console.error(error);
+    return error;
   }
 }

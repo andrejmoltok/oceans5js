@@ -17,6 +17,9 @@ export default function Page() {
         unoptimized
         className={styles.loading}
       />
+      <span className={styles.loading}>
+        Click on the Menu items to continue...
+      </span>
     </>
   );
 }

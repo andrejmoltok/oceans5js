@@ -9,4 +9,5 @@ export type User = {
   location: string | null;
   lockedAt: Date | null;
   mfaEnabled: boolean;
+  mfaComplete: boolean;
 } | null;

@@ -22,6 +22,7 @@ model user {
   status                    String    @db.VarChar(100)
   lockedAt                  DateTime? @db.Timestamp(0)
   mfaEnabled                Boolean   @default(false)
+  mfaComplete               Boolean   @default(false)
   lastActive                DateTime? @default(now()) @db.Timestamp(0)
   createdAt                 DateTime  @default(now()) @db.Timestamp(0)
   codes                     codes[]
@@ -29,6 +30,7 @@ model user {
   games_games_player2Touser games[]   @relation("games_player2Touser")
   games_games_winnerTouser  games[]   @relation("games_winnerTouser")
   lobby                     lobby[]
+  mfa                       mfa[]
   moves                     moves[]
   player                    player[]
   session                   session[]
@@ -106,6 +108,7 @@ model games {
   player2                  Int       @db.UnsignedInt
   winner                   Int       @db.UnsignedInt
   status                   String    @db.VarChar(50)
+  length                   DateTime? @db.Time(0)
   startedAt                DateTime  @default(now()) @db.Timestamp(0)
   endedAt                  DateTime? @db.Timestamp(0)
   user_games_player1Touser user      @relation("games_player1Touser", fields: [player1], references: [id], onUpdate: Restrict, map: "games_user_FK")
@@ -119,16 +122,30 @@ model games {
 }
 
 model moves {
-  id       Int    @id @default(autoincrement()) @db.UnsignedInt
-  gameID   Int    @db.UnsignedInt
-  playerID Int    @db.UnsignedInt
-  turn     Int    @db.UnsignedInt
-  action   String @db.VarChar(100)
-  x        Int    @db.UnsignedInt
-  y        String @db.VarChar(1)
-  games    games  @relation(fields: [gameID], references: [id], onUpdate: Restrict, map: "moves_games_FK")
-  user     user   @relation(fields: [playerID], references: [id], onUpdate: Restrict, map: "moves_user_FK")
+  id       Int     @id @default(autoincrement()) @db.UnsignedInt
+  gameID   Int     @db.UnsignedInt
+  playerID Int     @db.UnsignedInt
+  turn     Int     @db.UnsignedInt
+  message  String? @db.MediumText
+  action   String  @db.VarChar(100)
+  x        Int     @db.UnsignedInt
+  y        String  @db.VarChar(1)
+  games    games   @relation(fields: [gameID], references: [id], onUpdate: Restrict, map: "moves_games_FK")
+  user     user    @relation(fields: [playerID], references: [id], onUpdate: Restrict, map: "moves_user_FK")
 
   @@index([gameID], map: "moves_games_FK")
   @@index([playerID], map: "moves_user_FK")
+}
+
+model mfa {
+  id           Int      @id @default(autoincrement()) @db.UnsignedInt
+  userID       Int      @db.UnsignedInt
+  secretAscii  String   @db.LongText
+  secretHex    String   @db.LongText
+  secretBase32 String   @db.LongText
+  secretOTP    String   @db.LongText
+  createdAt    DateTime @default(now()) @db.Timestamp(0)
+  user         user     @relation(fields: [userID], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "mfa_user_FK")
+
+  @@index([userID], map: "mfa_user_FK")
 }

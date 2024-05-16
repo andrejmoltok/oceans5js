@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "2e381cdab29b16fb",
+        "id": "34def58ac58a17d0",
         "type": "tabs",
         "children": [
           {
-            "id": "5edba764ff794ed5",
+            "id": "62b0b83f57083ec7",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -138,7 +138,7 @@
       "command-palette:Parancspaletta megnyitása": false
     }
   },
-  "active": "5edba764ff794ed5",
+  "active": "62b0b83f57083ec7",
   "lastOpenFiles": [
     "How to play.md",
     "Menu.md",
