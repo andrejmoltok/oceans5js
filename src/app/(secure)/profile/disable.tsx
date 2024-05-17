@@ -30,6 +30,8 @@ export default function Disable() {
     ValidationError<typeof disableZodSchema>
   >({});
 
+  const [validPassError, setValidPassError] = React.useState<string>("");
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDisableErrors({});
@@ -48,7 +50,6 @@ export default function Disable() {
       onSuccess: async () => {
         setDisableErrors({});
         await onClickSubmit(data);
-        // resetUserForm();
       },
       schema: disableZodSchema,
     });
@@ -94,7 +95,7 @@ export default function Disable() {
                 value="Cancel"
                 onClick={(event) => {
                   event?.preventDefault();
-                  //TODO close Disable window and set mfaCheckBox to Enabled
+                  //TODO close Disable window and set mfaCheckBox back to Enabled
                 }}
               />
               <input
@@ -117,6 +118,11 @@ export default function Disable() {
           {disableErrors && disableErrors.confirm && (
             <div style={{ color: "red" }}>
               Confirm - {disableErrors.confirm}
+            </div>
+          )}
+          {validPassError && (
+            <div style={{ color: "red" }}>
+              Password Error - {validPassError}
             </div>
           )}
         </section>
