@@ -7,9 +7,11 @@ import { redirect } from "next/navigation";
 import { User } from "@/actions/user/user";
 
 import Disable from "./disable";
+import { disableType } from "@/lib/mfa/disableType";
 
 import Switch from "@/actions/mfa/switch";
 import MFASetupCheck from "@/actions/mfa/mfaSetupCheck";
+import ValidPass from "@/actions/mfa/disable/validPass";
 
 import styles from "@/styles/mfa.module.css";
 import clsx from "clsx";
@@ -40,61 +42,64 @@ export default function MFA({ fetchedUser }: { fetchedUser: User }) {
   };
 
   const handleMFAToggle = React.useCallback(async () => {
-    await mfaToggle(fetchedUser?.id as number, !mfaCheckBox);
-    setMFACheckBox(!mfaCheckBox);
-    setDisable(!disable);
-  }, [fetchedUser?.id, mfaCheckBox, disable]);
-
-  //TODO - check if setup is completed, if true don't redirect else redirect
-  React.useEffect(() => {
-    if (mfaCheckBox === true && mfaComplete === false) {
-      redirect("/profile/mfa");
-    } else if (mfaCheckBox === false && mfaComplete === true) {
+    if (mfaCheckBox) {
       setDisable(true);
+    } else {
+      await mfaToggle(fetchedUser?.id as number, !mfaCheckBox);
+      setMFACheckBox(!mfaCheckBox);
+    }
+  }, [fetchedUser?.id, mfaCheckBox]);
+
+  React.useEffect(() => {
+    if (mfaCheckBox && !mfaComplete) {
+      redirect("/profile/mfa");
     }
   }, [mfaCheckBox, mfaComplete]);
 
-  // if MFA is being disabled, then render component which asks for user's password
+  const [validPassError, setValidPassError] = React.useState<string>("");
+
+  const handleDisableSubmit = async (passwordData: disableType) => {
+    const validatePass = await ValidPass(passwordData);
+
+    if (validatePass.success) {
+      await mfaToggle(fetchedUser?.id as number, false);
+      setMFACheckBox(false);
+      setDisable(false);
+    } else {
+      setValidPassError(validatePass.error as string);
+      setMFACheckBox(true);
+      setDisable(true);
+    }
+  };
+
   if (disable) {
     return (
-      <>
-        <section>
-          Multi-Factor Authentication:{" "}
-          {!mfaCheckBox && <span className={styles.disabled}>Disabled</span>}{" "}
-          <label className={styles.switch}>
-            <input
-              id="switch"
-              type="checkbox"
-              checked={mfaCheckBox}
-              onChange={() => {
-                handleMFAToggle();
-              }}
-            ></input>
-            <span className={clsx([styles.slider, styles.round])}></span>
-          </label>
-        </section>
-        <Disable />
-      </>
-    );
-  } else {
-    return (
-      <>
-        <section>
-          Multi-Factor Authentication:{" "}
-          {mfaCheckBox && <span className={styles.enabled}>Enabled</span>}{" "}
-          <label className={styles.switch}>
-            <input
-              id="switch"
-              type="checkbox"
-              checked={mfaCheckBox}
-              onChange={() => {
-                handleMFAToggle();
-              }}
-            ></input>
-            <span className={clsx([styles.slider, styles.round])}></span>
-          </label>
-        </section>
-      </>
+      <Disable
+        setMFACheckBox={setMFACheckBox}
+        setDisable={setDisable}
+        handleDisableSubmit={handleDisableSubmit}
+        validPassError={validPassError}
+        setValidPassError={setValidPassError}
+      />
     );
   }
+
+  return (
+    <section>
+      Multi-Factor Authentication:{" "}
+      {!mfaCheckBox && <span className={styles.disabled}>Disabled </span>}
+      {mfaCheckBox && <span className={styles.enabled}>Enabled </span>}
+      <label className={styles.switch}>
+        <input
+          id="switch"
+          type="checkbox"
+          checked={mfaCheckBox}
+          onChange={() => {
+            handleMFAToggle();
+          }}
+        ></input>
+        <span className={clsx([styles.slider, styles.round])}></span>
+      </label>
+    </section>
+  );
 }

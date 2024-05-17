@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Dispatch } from "react";
 
 import styles from "@/styles/disable.module.css";
 
@@ -10,30 +10,36 @@ import { mdiLockQuestion } from "@mdi/js";
 import { disableType } from "@/lib/mfa/disableType";
 import { disableZodSchema } from "@/lib/mfa/disableZodSchema";
 import { handleZodValidation, ValidationError } from "@/lib/zod/ZodError";
+import ValidPass from "@/actions/mfa/disable/validPass";
+import { SetStateAction } from "jotai";
 
 // TODO - ask for users' password to disable MFA
 // TODO - add return button to redirect user to profile page
-export default function Disable() {
+export default function Disable({
+  setMFACheckBox,
+  setDisable,
+  handleDisableSubmit,
+  validPassError,
+  setValidPassError,
+}: {
+  setMFACheckBox: Dispatch<SetStateAction<boolean>>;
+  setDisable: Dispatch<SetStateAction<boolean>>;
+  validPassError: string;
+  setValidPassError: Dispatch<SetStateAction<string>>;
+  handleDisableSubmit: (data: disableType) => void;
+}) {
   const [mfaDisable, setMFADisable] = React.useState<disableType>({
     password: "",
     confirm: "",
   });
 
-  const resetDisableForm = (): void => {
-    setMFADisable({
-      password: "",
-      confirm: "",
-    });
-  };
-
   const [disableErrors, setDisableErrors] = React.useState<
     ValidationError<typeof disableZodSchema>
   >({});
 
-  const [validPassError, setValidPassError] = React.useState<string>("");
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setValidPassError("");
     setDisableErrors({});
     setMFADisable((prevdata) => ({
       ...prevdata,
@@ -41,15 +47,13 @@ export default function Disable() {
     }));
   };
 
-  const onClickSubmit = async (data: disableType) => {};
-
   const schemaParse = (data: disableType) => {
     handleZodValidation({
       onError: setDisableErrors,
       data: data,
       onSuccess: async () => {
         setDisableErrors({});
-        await onClickSubmit(data);
+        await handleDisableSubmit(data);
       },
       schema: disableZodSchema,
     });
@@ -72,7 +76,7 @@ export default function Disable() {
               id="password"
               name="password"
               value={mfaDisable.password}
-              onChange={(e) => handleInputChange(e)}
+              onChange={handleInputChange}
               autoComplete="on"
               placeholder="password"
             />
@@ -85,7 +89,7 @@ export default function Disable() {
               id="confirm"
               name="confirm"
               value={mfaDisable.confirm}
-              onChange={(e) => handleInputChange(e)}
+              onChange={handleInputChange}
               autoComplete="on"
               placeholder="confirm password"
             />
@@ -95,7 +99,8 @@ export default function Disable() {
                 value="Cancel"
                 onClick={(event) => {
                   event?.preventDefault();
-                  //TODO close Disable window and set mfaCheckBox back to Enabled
+                  setDisable(false);
+                  setMFACheckBox(true);
                 }}
               />
               <input
@@ -110,12 +115,12 @@ export default function Disable() {
           </form>
         </section>
         <section className={styles.error}>
-          {disableErrors && disableErrors.password && (
+          {disableErrors.password && (
             <div style={{ color: "red" }}>
               Password - {disableErrors.password}
             </div>
           )}
-          {disableErrors && disableErrors.confirm && (
+          {disableErrors.confirm && (
             <div style={{ color: "red" }}>
               Confirm - {disableErrors.confirm}
             </div>

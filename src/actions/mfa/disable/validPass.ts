@@ -25,8 +25,8 @@ export default async function ValidPass(
         passwordHash: true,
       },
     });
-    const dataHash = bcrypt.compare(data.confirm, userHash?.passwordHash);
-    if (dataHash) {
+    const dataHash = await bcrypt.compare(data.confirm, userHash?.passwordHash);
+    if (dataHash === true) {
       return { success: true };
     } else {
       return { success: false, error: "Incorrect password" };
