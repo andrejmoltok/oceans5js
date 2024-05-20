@@ -65,8 +65,6 @@ export default function TOTP() {
     Verify();
   }, [values, router]);
 
-  React.useEffect(() => {}, [values]);
-
   return (
     <>
       <section className={styles.main}>
