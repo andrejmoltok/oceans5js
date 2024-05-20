@@ -66,7 +66,9 @@ export default function TOTP({
           setVerifySuccess(true);
           setVerifySecret(false);
         } else {
+          setVerifySecret(false);
           setVerifySuccess(false);
+          setValues(Array(6).fill(""));
           setSuccessMessage("Please try a new code!");
         }
       }

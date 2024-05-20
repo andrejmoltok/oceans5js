@@ -52,7 +52,7 @@ export default async function MFASetup({
       return { success: false };
     }
   } catch (error) {
-    console.log(error);
-    return null;
+    console.log("MFA Setup Token Verify Error: ", error);
+    return { success: false };
   }
 }
