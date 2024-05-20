@@ -5,6 +5,7 @@ import styles from "@/styles/signin.module.css";
 import VerifyEmailCode from "@/actions/emailVerify/verifyEmailCode";
 import Icon from "@mdi/react";
 import { mdiLoading, mdiCheck } from "@mdi/js";
+import Resend from "./resend";
 
 export default function Page({
   searchParams,
@@ -13,6 +14,7 @@ export default function Page({
 }) {
   const [verify, setVerify] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
+  const [resendRender, setResendRender] = React.useState<boolean>(false);
   React.useEffect(() => {
     async function VerifyEffect() {
       const emailVerify = await VerifyEmailCode({
@@ -22,6 +24,7 @@ export default function Page({
       if (emailVerify.success === true) {
         setVerify(true);
       } else {
+        setVerify(false);
         setError(emailVerify.error as string);
       }
     }
@@ -30,7 +33,7 @@ export default function Page({
   return (
     <>
       <div className={styles.main}>
-        {!verify && error === "" && (
+        {!verify && error === "" ? (
           <>
             Verifying email...
             <Icon
@@ -41,8 +44,8 @@ export default function Page({
               spin={true}
             />
           </>
-        )}
-        {verify && error === "" && (
+        ) : null}{" "}
+        {verify && error === "" ? (
           <>
             {" "}
             Email verified successfully!
@@ -53,17 +56,31 @@ export default function Page({
               description={"Success Checkmark"}
             />
           </>
-        )}
-        {error ? (
+        ) : null}
+        {error && !resendRender ? (
           <>
-            <div>{error}</div>
-            <div>
+            <div style={{ margin: "10px 10px" }}>{error}</div>
+            <div
+              style={{
+                cursor: "pointer",
+                border: "1px solid black",
+                borderRadius: "5px",
+                padding: "3px",
+              }}
+              onClick={() => {
+                setResendRender(true);
+              }}
+            >
+              Resend
+            </div>
+            <div style={{ margin: "10px 10px" }}>
               <a href="/" style={{ textDecoration: "none" }}>
                 Main Page
               </a>
             </div>
           </>
         ) : null}
+        {resendRender ? <Resend /> : null}
       </div>
     </>
   );

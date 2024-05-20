@@ -1,8 +1,6 @@
-"use server";
-
+import { prisma } from "@/lib/prisma/client";
 import { CronJob } from "cron";
 import { cookies } from "next/headers";
-import { prisma } from "@/lib/prisma/client";
 
 const currentTime = new Date();
 const futureTime = new Date();
@@ -47,7 +45,3 @@ export const codeExpiryCron = new CronJob(
     }
   }
 );
-
-export default async function CodeExpiryStart() {
-  codeExpiryCron.start();
-}
