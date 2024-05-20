@@ -30,7 +30,7 @@ model user {
   games_games_player2Touser games[]   @relation("games_player2Touser")
   games_games_winnerTouser  games[]   @relation("games_winnerTouser")
   lobby                     lobby[]
-  mfa                       mfa[]
+  mfa                       mfa?
   moves                     moves[]
   player                    player[]
   session                   session[]
@@ -139,13 +139,8 @@ model moves {
 
 model mfa {
   id           Int      @id @default(autoincrement()) @db.UnsignedInt
-  userID       Int      @db.UnsignedInt
-  secretAscii  String   @db.LongText
-  secretHex    String   @db.LongText
+  userID       Int      @unique(map: "mfa_unique") @db.UnsignedInt
   secretBase32 String   @db.LongText
-  secretOTP    String   @db.LongText
   createdAt    DateTime @default(now()) @db.Timestamp(0)
-  user         user     @relation(fields: [userID], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "mfa_user_FK")
-
-  @@index([userID], map: "mfa_user_FK")
+  user         user     @relation(fields: [userID], references: [id], onDelete: Cascade, map: "mfa_user_FK")
 }

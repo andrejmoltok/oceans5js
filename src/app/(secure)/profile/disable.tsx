@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Dispatch } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 import styles from "@/styles/disable.module.css";
 
@@ -10,11 +10,7 @@ import { mdiLockQuestion } from "@mdi/js";
 import { disableType } from "@/lib/mfa/disableType";
 import { disableZodSchema } from "@/lib/mfa/disableZodSchema";
 import { handleZodValidation, ValidationError } from "@/lib/zod/ZodError";
-import ValidPass from "@/actions/mfa/disable/validPass";
-import { SetStateAction } from "jotai";
 
-// TODO - ask for users' password to disable MFA
-// TODO - add return button to redirect user to profile page
 export default function Disable({
   setMFACheckBox,
   setDisable,

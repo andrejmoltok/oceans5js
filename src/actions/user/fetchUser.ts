@@ -32,6 +32,7 @@ export default async function FetchUser(): Promise<User | null> {
           location: true,
           lockedAt: true,
           mfaEnabled: true,
+          mfaComplete: true,
         },
       });
       return fetchUser;

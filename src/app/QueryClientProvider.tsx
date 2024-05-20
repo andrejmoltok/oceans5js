@@ -9,7 +9,7 @@ export default function QPC({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000, // staleTime = 1 minute
+            staleTime: 30 * 1000, // staleTime = 1 minute
           },
         },
       })

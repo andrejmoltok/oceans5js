@@ -139,8 +139,8 @@ export default function LoginUser({
                 placeholder="password"
               />
               <label htmlFor="confirm">
-                <Icon path={mdiLockQuestion} size={0.8} />
-                Confirm:<span style={{ color: "red" }}>*</span>
+                <Icon path={mdiLockQuestion} size={0.8} /> Confirm:
+                <span style={{ color: "red" }}>*</span>
               </label>
               <input
                 type="password"

@@ -1,0 +1,27 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.totp {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2px;
+  width: 200px;
+  height: 45px;
+}
+
+.totp > * {
+  width: 20px;
+  border-radius: 5px;
+  border-color: black;
+  font-size: 2rem;
+}
+
+.icons {
+  margin: 20px 0;
+  height: 33px;
+}

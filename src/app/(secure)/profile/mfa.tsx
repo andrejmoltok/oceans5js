@@ -12,6 +12,7 @@ import { disableType } from "@/lib/mfa/disableType";
 import Switch from "@/actions/mfa/switch";
 import MFASetupCheck from "@/actions/mfa/mfaSetupCheck";
 import ValidPass from "@/actions/mfa/disable/validPass";
+import RemoveSecret from "@/actions/mfa/disable/removeSecret";
 
 import styles from "@/styles/mfa.module.css";
 import clsx from "clsx";
@@ -52,9 +53,9 @@ export default function MFA({ fetchedUser }: { fetchedUser: User }) {
 
   React.useEffect(() => {
     if (mfaCheckBox && !mfaComplete) {
-      redirect("/profile/mfa");
+      redirect(`/profile/mfa?email=${fetchedUser?.email}`);
     }
-  }, [mfaCheckBox, mfaComplete]);
+  }, [mfaCheckBox, mfaComplete, fetchedUser?.email]);
 
   const [validPassError, setValidPassError] = React.useState<string>("");
 
@@ -65,6 +66,7 @@ export default function MFA({ fetchedUser }: { fetchedUser: User }) {
       await mfaToggle(fetchedUser?.id as number, false);
       setMFACheckBox(false);
       setDisable(false);
+      await RemoveSecret();
     } else {
       setValidPassError(validatePass.error as string);
       setMFACheckBox(true);
