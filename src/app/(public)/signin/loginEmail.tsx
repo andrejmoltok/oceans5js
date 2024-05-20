@@ -19,6 +19,8 @@ import { mdiEmail, mdiLockQuestion, mdiReload } from "@mdi/js";
 
 import SessionExpiry from "@/actions/signoff/sessionExpiredCron";
 import Reset from "./reset";
+import TOTPCheck from "@/actions/signin/totpCheck";
+import TOTP from "./totp";
 
 export default function LoginEmail({
   choose,
@@ -28,11 +30,9 @@ export default function LoginEmail({
   setChoose: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
-
+  const [renderTOTP, setRenderTOTP] = React.useState<boolean>(false);
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
-
   const [loadReset, setLoadReset] = React.useState<boolean>(false);
-
   const [loginEmail, setLoginEmail] = React.useState<signinEmailType>({
     email: "",
     password: "",
@@ -70,6 +70,7 @@ export default function LoginEmail({
     const accountLockCheck = await AccountLockCheck({
       email: loginEmail.email,
     });
+    const totpCheck = await TOTPCheck();
 
     if (emailLogin.success === false) {
       setLoginError(emailLogin.error as string);
@@ -79,7 +80,11 @@ export default function LoginEmail({
     } else {
       resetEmailForm();
       await SessionExpiry();
-      router.replace("/profile");
+      if (totpCheck) {
+        setRenderTOTP(true);
+      } else {
+        router.replace("/profile");
+      }
     }
   };
 
@@ -102,7 +107,7 @@ export default function LoginEmail({
         <Reset />
       ) : loginAttempt === 3 ? (
         <AccountLock email={loginEmail.email} />
-      ) : (
+      ) : !renderTOTP ? (
         <section className={styles.main}>
           <section className={styles.wheel}>
             <div className={styles.title}>Login with Email</div>
@@ -208,6 +213,10 @@ export default function LoginEmail({
             {loginError && <div style={{ color: "red" }}>{loginError}</div>}
           </section>
         </section>
+      ) : (
+        <>
+          <TOTP />
+        </>
       )}
     </>
   );

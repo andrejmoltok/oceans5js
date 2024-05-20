@@ -19,6 +19,8 @@ import { mdiAccountCircle, mdiLockQuestion, mdiReload } from "@mdi/js";
 
 import SessionExpiry from "@/actions/signoff/sessionExpiredCron";
 import Reset from "./reset";
+import TOTPCheck from "@/actions/signin/totpCheck";
+import TOTP from "./totp";
 
 export default function LoginUser({
   choose,
@@ -28,11 +30,9 @@ export default function LoginUser({
   setChoose: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
-
+  const [renderTOTP, setRenderTOTP] = React.useState<boolean>(false);
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
-
   const [loadReset, setLoadReset] = React.useState<boolean>(false);
-
   const [loginUser, setLoginUser] = React.useState<signinUserType>({
     username: "",
     password: "",
@@ -68,6 +68,7 @@ export default function LoginUser({
     const accountLockCheck = await AccountLockCheck({
       username: loginUser.username,
     });
+    const totpCheck = await TOTPCheck();
 
     if (userLogin.success === false) {
       setLoginError(userLogin.error as string);
@@ -77,7 +78,11 @@ export default function LoginUser({
     } else {
       resetUserForm();
       await SessionExpiry();
-      router.replace("/profile");
+      if (totpCheck) {
+        setRenderTOTP(true);
+      } else {
+        router.replace("/profile");
+      }
     }
   };
 
@@ -100,7 +105,7 @@ export default function LoginUser({
         <Reset />
       ) : loginAttempt === 3 ? (
         <AccountLock username={loginUser.username} />
-      ) : (
+      ) : !renderTOTP ? (
         <section className={styles.main}>
           <section className={styles.wheel}>
             <div className={styles.title}>Login with Username</div>
@@ -206,6 +211,10 @@ export default function LoginUser({
             {loginError && <div style={{ color: "red" }}>{loginError}</div>}
           </section>
         </section>
+      ) : (
+        <>
+          <TOTP />
+        </>
       )}
     </>
   );
