@@ -136,7 +136,7 @@ export default function Resend() {
             />
             <input
               type="submit"
-              value="Log In"
+              value="Send"
               onClick={(event) => {
                 event?.preventDefault();
                 schemaParse(resendData);
