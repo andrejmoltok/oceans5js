@@ -13,7 +13,7 @@
 9. [Socket.IO](https://socket.io/)
 10. [EgoJS](https://github.com/oguzeroglu/Ego)
 11. [Material Design Icons(MDI)](https://pictogrammers.com/library/mdi/)
-12. [Speakeasy(MFA/TOTP)](https://www.npmjs.com/package/speakeasy)
+12. [Node-2FA](https://www.npmjs.com/package/node-2fa)
 13. [EmailJS](https://emailjs.com) - REPLACE THIS WQITH [LOOPS.SO](https://loops.so/) AFTER DOMAIN REGISTRATION
 14. [Cron](https://www.npmjs.com/package/cron)
 15. [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
