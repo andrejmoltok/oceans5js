@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { cookies } from "next/headers";
 import Iron from "@hapi/iron";
 import emailjs, { EmailJSResponseStatus } from "@emailjs/nodejs";
-import { codeExpiryCron } from "./codeExpiryCron";
+import { CodeExpiryCronStart } from "./codeExpiryCron";
 
 export default async function SendEmailVerification({
   username,
@@ -60,7 +60,7 @@ export default async function SendEmailVerification({
       expires: Date.now() + 24 * 60 * 60 * 1000,
     });
 
-    codeExpiryCron.start();
+    await CodeExpiryCronStart();
     await prisma.$disconnect();
     return true;
   } catch (err) {

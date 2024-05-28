@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
+
 import styles from "@/styles/signin.module.css";
-import VerifyEmailCode from "@/actions/emailVerify/verifyEmailCode";
 import Icon from "@mdi/react";
 import { mdiLoading, mdiCheck } from "@mdi/js";
+
+import VerifyEmailCode from "@/actions/emailVerify/verifyEmailCode";
 import Resend from "./resend";
 
 export default function Page({
@@ -12,28 +15,34 @@ export default function Page({
 }: {
   searchParams: { t: number; c: string };
 }) {
+  const router = useRouter();
   const [verify, setVerify] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
   const [resendRender, setResendRender] = React.useState<boolean>(false);
+
   React.useEffect(() => {
     async function VerifyEffect() {
-      const emailVerify = await VerifyEmailCode({
-        id: searchParams.t,
-        emailCode: searchParams.c,
-      });
-      if (emailVerify.success === true) {
-        setVerify(true);
-      } else {
-        setVerify(false);
-        setError(emailVerify.error as string);
+      if (searchParams) {
+        const emailVerify = await VerifyEmailCode({
+          id: Number(searchParams.t),
+          emailCode: `${searchParams.c}`,
+        });
+        if (emailVerify?.success) {
+          setVerify(true);
+          setError("");
+        } else {
+          setVerify(false);
+          setError(emailVerify?.error as string);
+        }
       }
     }
     VerifyEffect();
-  }, [searchParams.t, searchParams.c]);
+  }, [searchParams]);
+
   return (
     <>
       <div className={styles.main}>
-        {!verify && error === "" ? (
+        {!verify && !error ? (
           <>
             Verifying email...
             <Icon
@@ -45,7 +54,7 @@ export default function Page({
             />
           </>
         ) : null}{" "}
-        {verify && error === "" ? (
+        {verify && !error ? (
           <>
             {" "}
             Email verified successfully!

@@ -85,6 +85,11 @@ export default function Page({
           Enter the time-based one-time password below from your device:
         </div>
         <TOTP secret={secret} />
+        <input
+          type="button"
+          value="Done"
+          onClick={() => router.replace("/profile")}
+        />
       </section>
     </>
   );

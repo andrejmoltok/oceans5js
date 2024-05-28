@@ -4,7 +4,6 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 import { useQuery } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import MFA from "./mfa";
 import LogoutAction from "@/actions/signoff/logoutAction";
@@ -45,7 +44,6 @@ export default function Page() {
           }}
         />
       </section>
-      <ReactQueryDevtools initialIsOpen={false} />
     </>
   );
 }

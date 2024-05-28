@@ -1,47 +1,55 @@
+"use server";
+
 import { prisma } from "@/lib/prisma/client";
 import { CronJob } from "cron";
 import { cookies } from "next/headers";
 
 const currentTime = new Date();
 const futureTime = new Date();
+futureTime.setTime(currentTime.getTime() + 24 * 60 * 60 * 1000);
 
-export const codeExpiryCron = new CronJob(
-  new Date(futureTime.setTime(currentTime.getTime() + 24 * 60 * 60 * 1000)),
-  async () => {
-    try {
-      const cookieStore = cookies();
-      const userIDForCodeCookie = Number(
-        cookieStore.get("codeExpiryByUser")?.value as string
-      );
-      const codeRecordByUser = await prisma.codes.findMany({
-        where: {
-          AND: [
-            {
-              userID: userIDForCodeCookie,
-              codeType: "verify",
-            },
-          ],
-        },
-        orderBy: [
+const codeExpiryCron = new CronJob(futureTime, async () => {
+  try {
+    const cookieStore = cookies();
+    const userIDForCodeCookie = Number(
+      cookieStore.get("codeExpiryByUser")?.value as string
+    );
+    const codeRecordByUser = await prisma.codes.findMany({
+      where: {
+        AND: [
           {
-            createdAt: "desc",
+            userID: userIDForCodeCookie,
+            codeType: "verify",
           },
         ],
-        select: {
-          id: true,
+      },
+      orderBy: [
+        {
+          createdAt: "desc",
         },
-      });
-      await prisma.codes.update({
-        where: {
-          id: codeRecordByUser[0]?.id as number,
-        },
-        data: {
-          expired: true,
-        },
-      });
-      cookieStore.delete("codeExpiryByUser");
-    } catch (error) {
-      console.error("Code Expiry Cron Error: ", error);
-    }
+      ],
+      select: {
+        id: true,
+      },
+    });
+    await prisma.codes.update({
+      where: {
+        id: codeRecordByUser[0]?.id as number,
+      },
+      data: {
+        expired: true,
+      },
+    });
+    cookieStore.delete("codeExpiryByUser");
+  } catch (error) {
+    console.error("Code Expiry Cron Error: ", error);
   }
-);
+});
+
+export async function CodeExpiryCronStart() {
+  codeExpiryCron.start();
+}
+
+export async function CodeExpiryCronStop() {
+  codeExpiryCron.stop();
+}
