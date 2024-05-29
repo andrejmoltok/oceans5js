@@ -10,7 +10,9 @@ export default async function VerifyEmailCode({
 }: {
   id: number;
   emailCode: string;
-}): Promise<{ success: boolean; error?: string } | undefined> {
+}): Promise<
+  { success: boolean; message?: string; error?: string } | undefined
+> {
   try {
     // get the user information about the `emailVerified` column
     const user = await prisma.user.findUnique({
@@ -54,15 +56,11 @@ export default async function VerifyEmailCode({
     );
 
     // check the `emailVerified` column
-    if (user?.emailVerified === false && unsealed === codeFromEmail) {
+    if (!user?.emailVerified && unsealed === codeFromEmail) {
       // verify the code
       // if the unsealed object equals to the code from the email link
       // then return success
-      if (
-        unsealed === codeFromEmail &&
-        codeFromDB[0]?.expired === false &&
-        codeFromDB[0]?.used === false
-      ) {
+      if (codeFromDB[0]?.expired === false && codeFromDB[0]?.used === false) {
         // update the user record at emailverified column
         await prisma.user.update({
           where: {
@@ -102,40 +100,34 @@ export default async function VerifyEmailCode({
         await prisma.$disconnect();
         return {
           success: true,
+          message: "Email verified successfully",
+        };
+      } else if (
+        codeFromDB[0]?.expired === true &&
+        codeFromDB[0]?.used === false
+      ) {
+        return {
+          success: false,
+          error: "Code is expired",
         };
       }
-    } else if (
-      user?.emailVerified === true &&
-      unsealed === codeFromEmail &&
-      codeFromDB[0]?.expired === false &&
-      codeFromDB[0]?.used === false
-    ) {
-      return {
-        success: false,
-        error: "Email already verified",
-      };
-    } else if (
-      user?.emailVerified === false &&
-      unsealed === codeFromEmail &&
-      codeFromDB[0]?.expired === true &&
-      codeFromDB[0]?.used === false
-    ) {
-      return {
-        success: false,
-        error: "Code is expired",
-      };
-    } else if (
-      user?.emailVerified === true &&
-      unsealed === codeFromEmail &&
-      codeFromDB[0]?.used === true &&
-      codeFromDB[0]?.expired === false
-    ) {
-      await CodeExpiryCronStop();
+    } else if (user?.emailVerified && unsealed === codeFromEmail) {
+      if (codeFromDB[0]?.used === true && codeFromDB[0]?.expired === false) {
+        await CodeExpiryCronStop();
 
-      return {
-        success: false,
-        error: "Code is already used",
-      };
+        return {
+          success: false,
+          error: "Code is already used",
+        };
+      } else if (
+        codeFromDB[0]?.expired === false &&
+        codeFromDB[0]?.used === false
+      ) {
+        return {
+          success: false,
+          error: "Email already verified",
+        };
+      }
     }
   } catch (error) {
     console.log(error);

@@ -17,23 +17,24 @@ export default function Page({
 }) {
   const router = useRouter();
   const [verify, setVerify] = React.useState<boolean>(false);
+  const [message, setMessage] = React.useState<string>("");
   const [error, setError] = React.useState<string>("");
   const [resendRender, setResendRender] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     async function VerifyEffect() {
-      if (searchParams) {
-        const emailVerify = await VerifyEmailCode({
-          id: Number(searchParams.t),
-          emailCode: `${searchParams.c}`,
-        });
-        if (emailVerify?.success) {
-          setVerify(true);
-          setError("");
-        } else {
-          setVerify(false);
-          setError(emailVerify?.error as string);
-        }
+      const emailVerify = await VerifyEmailCode({
+        id: searchParams.t,
+        emailCode: searchParams.c,
+      });
+      if (emailVerify?.success) {
+        setVerify(true);
+        setMessage(emailVerify.message as string);
+        setError("");
+      } else {
+        setVerify(false);
+        setMessage("");
+        setError(emailVerify?.error as string);
       }
     }
     VerifyEffect();
@@ -57,7 +58,7 @@ export default function Page({
         {verify && !error ? (
           <>
             {" "}
-            Email verified successfully!
+            {message}
             <Icon
               path={mdiCheck}
               size={0.7}
