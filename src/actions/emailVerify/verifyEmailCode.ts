@@ -97,6 +97,7 @@ export default async function VerifyEmailCode({
             usedAt: new Date(),
           },
         });
+        await CodeExpiryCronStop();
         await prisma.$disconnect();
         return {
           success: true,
