@@ -11,7 +11,7 @@ import { resendZodSchema } from "@/lib/verify/resend/resendZodSchema";
 import { handleZodValidation, ValidationError } from "@/lib/zod/ZodError";
 import SendEmailVerification from "@/actions/emailVerify/sendEmailVerification";
 
-export default function Resend() {
+export default function Page() {
   const [resendData, setResendData] = React.useState<resendType>({
     username: "",
     confirmUser: "",

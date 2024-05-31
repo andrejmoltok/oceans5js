@@ -54,7 +54,6 @@ export default function TOTP() {
         if (verify) {
           setVerifySuccess(true);
           setVerifyTotp(false);
-          router.replace("/profile");
         } else {
           setVerifySuccess(false);
           setValues(Array(6).fill(""));
@@ -91,7 +90,10 @@ export default function TOTP() {
           {verifyTotp ? (
             <Icon path={mdiLoading} size={1.2} spin />
           ) : verifySuccess ? (
-            <Icon path={mdiCheck} size={1.2} />
+            <>
+              <Icon path={mdiCheck} size={1.2} />
+              {router.replace("/profile")}
+            </>
           ) : successMessage ? (
             <span
               style={{

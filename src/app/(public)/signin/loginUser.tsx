@@ -17,7 +17,7 @@ import styles from "@/styles/signin.module.css";
 import Icon from "@mdi/react";
 import { mdiAccountCircle, mdiLockQuestion, mdiReload } from "@mdi/js";
 
-import SessionExpiry from "@/actions/signoff/sessionExpiredCron";
+import { SessionExpiryStart } from "@/actions/signoff/sessionExpiredCron";
 import Reset from "./reset";
 import TOTPCheck from "@/actions/signin/totpCheck";
 import TOTP from "./totp";
@@ -31,6 +31,7 @@ export default function LoginUser({
 }) {
   const router = useRouter();
   const [renderTOTP, setRenderTOTP] = React.useState<boolean>(false);
+  const [resendRender, setResendRender] = React.useState<boolean>(false);
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
   const [loadReset, setLoadReset] = React.useState<boolean>(false);
   const [loginUser, setLoginUser] = React.useState<signinUserType>({
@@ -77,7 +78,7 @@ export default function LoginUser({
       }
     } else {
       resetUserForm();
-      await SessionExpiry();
+      await SessionExpiryStart();
       if (totpCheck) {
         setRenderTOTP(true);
       } else {
@@ -105,6 +106,8 @@ export default function LoginUser({
         <Reset />
       ) : loginAttempt === 3 ? (
         <AccountLock username={loginUser.username} />
+      ) : resendRender ? (
+        <>{router.replace("./signup/verify/resend")}</>
       ) : !renderTOTP ? (
         <section className={styles.main}>
           <section className={styles.wheel}>
@@ -186,6 +189,20 @@ export default function LoginUser({
                 }}
               >
                 Reset password
+              </div>
+              <div
+                style={{
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                  padding: "3px",
+                  fontSize: "0.8rem",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setResendRender(true);
+                }}
+              >
+                Resend Verification
               </div>
             </form>
           </section>

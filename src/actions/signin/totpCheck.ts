@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import Iron from "@hapi/iron";
 import MFASetupCheck from "../mfa/mfaSetupCheck";
 
-export default async function TOTPCheck() {
+export default async function TOTPCheck(): Promise<boolean> {
   try {
     const cookieStore = cookies();
     const unsealed = await Iron.unseal(
@@ -21,6 +21,6 @@ export default async function TOTPCheck() {
     }
   } catch (error) {
     console.log("TOTP Check at Login Error: ", error);
-    return error;
+    return false;
   }
 }

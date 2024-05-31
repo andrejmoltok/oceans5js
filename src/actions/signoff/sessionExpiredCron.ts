@@ -51,6 +51,10 @@ const sessionExpiry = new CronJob(pattern, async () => {
   }
 });
 
-export default async function SessionExpiry() {
+export async function SessionExpiryStart() {
   sessionExpiry.start();
+}
+
+export async function SessionExpiryStop() {
+  sessionExpiry.stop();
 }

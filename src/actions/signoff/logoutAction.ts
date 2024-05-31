@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma/client";
 import { cookies } from "next/headers";
+import { SessionExpiryStop } from "./sessionExpiredCron";
 
 export default async function LogoutAction(): Promise<void> {
   try {
@@ -19,6 +20,8 @@ export default async function LogoutAction(): Promise<void> {
         },
       });
     }
+
+    await SessionExpiryStop();
 
     cookieStore.delete("userSession");
 

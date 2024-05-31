@@ -17,7 +17,7 @@ import Icon from "@mdi/react";
 import styles from "@/styles/signin.module.css";
 import { mdiEmail, mdiLockQuestion, mdiReload } from "@mdi/js";
 
-import SessionExpiry from "@/actions/signoff/sessionExpiredCron";
+import { SessionExpiryStart } from "@/actions/signoff/sessionExpiredCron";
 import Reset from "./reset";
 import TOTPCheck from "@/actions/signin/totpCheck";
 import TOTP from "./totp";
@@ -31,6 +31,7 @@ export default function LoginEmail({
 }) {
   const router = useRouter();
   const [renderTOTP, setRenderTOTP] = React.useState<boolean>(false);
+  const [resendRender, setResendRender] = React.useState<boolean>(false);
   const [loginAttempt, setLoginAttempt] = React.useState<number>(0);
   const [loadReset, setLoadReset] = React.useState<boolean>(false);
   const [loginEmail, setLoginEmail] = React.useState<signinEmailType>({
@@ -79,7 +80,7 @@ export default function LoginEmail({
       }
     } else {
       resetEmailForm();
-      await SessionExpiry();
+      await SessionExpiryStart();
       if (totpCheck) {
         setRenderTOTP(true);
       } else {
@@ -107,6 +108,8 @@ export default function LoginEmail({
         <Reset />
       ) : loginAttempt === 3 ? (
         <AccountLock email={loginEmail.email} />
+      ) : resendRender ? (
+        <>{router.replace("./signup/verify/resend")}</>
       ) : !renderTOTP ? (
         <section className={styles.main}>
           <section className={styles.wheel}>
@@ -188,6 +191,20 @@ export default function LoginEmail({
                 }}
               >
                 Reset password
+              </div>
+              <div
+                style={{
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                  padding: "3px",
+                  fontSize: "0.8rem",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setResendRender(true);
+                }}
+              >
+                Resend Verification
               </div>
             </form>
           </section>

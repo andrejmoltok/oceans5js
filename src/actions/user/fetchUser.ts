@@ -5,7 +5,7 @@ import Iron from "@hapi/iron";
 import { cookies } from "next/headers";
 import { User } from "./user";
 
-export default async function FetchUser(): Promise<User | null> {
+export default async function FetchUser(): Promise<User> {
   try {
     const cookieStore = cookies();
     const cookie = cookieStore.get("userSession")?.value as string;
@@ -17,30 +17,17 @@ export default async function FetchUser(): Promise<User | null> {
         Iron.defaults
       );
 
-      const fetchUser: User = await prisma.user.findFirst({
+      const fetchUser: User = await prisma.user.findUniqueOrThrow({
         where: {
           id: unsealed.userID,
         },
-        select: {
-          id: true,
-          username: true,
-          email: true,
-          firstname: true,
-          lastname: true,
-          birthYear: true,
-          gender: true,
-          location: true,
-          lockedAt: true,
-          mfaEnabled: true,
-          mfaComplete: true,
-        },
       });
-      return fetchUser;
+      return fetchUser as User;
     } else {
-      return null;
+      return {} as User;
     }
   } catch (error) {
-    //console.log("FetchUser Error: ", error);
-    return null;
+    console.log("FetchUser Error: ", error);
+    return {} as User;
   }
 }

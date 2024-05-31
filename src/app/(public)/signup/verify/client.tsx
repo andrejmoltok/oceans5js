@@ -7,8 +7,6 @@ import styles from "@/styles/signin.module.css";
 import Icon from "@mdi/react";
 import { mdiLoading, mdiCheck } from "@mdi/js";
 
-import Resend from "./resend";
-
 export default function Client({
   emailVerify,
 }: {
@@ -86,7 +84,7 @@ export default function Client({
             </div>
           </>
         ) : null}
-        {resendRender ? <Resend /> : null}
+        {resendRender ? <>{router.push("/signup/verify/resend")}</> : null}
       </div>
     </>
   );

@@ -10,4 +10,4 @@ export type User = {
   lockedAt: Date | null;
   mfaEnabled: boolean;
   mfaComplete: boolean;
-} | null;
+};

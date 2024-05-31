@@ -1,18 +1,10 @@
 "use server";
 
-import { cookies } from "next/headers";
-import Iron from "@hapi/iron";
 import MFASetupCheck from "./mfaSetupCheck";
 
 export default async function SetupCheck() {
   try {
-    const cookieStore = cookies();
-    const unsealed = await Iron.unseal(
-      cookieStore.get("userSession")?.value as string,
-      process.env.IRONPASS as string,
-      Iron.defaults
-    );
-    const check = await MFASetupCheck(unsealed.userID as number);
+    const check = await MFASetupCheck();
     if (check) {
       return true;
     } else {

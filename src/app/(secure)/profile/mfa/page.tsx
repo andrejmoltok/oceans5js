@@ -30,7 +30,7 @@ export default function Page({
     async function Check() {
       const check = await SetupCheck();
       if (check) {
-        router.replace("/profile");
+        router.push("/profile");
       }
     }
     Check();
@@ -88,7 +88,7 @@ export default function Page({
         <input
           type="button"
           value="Done"
-          onClick={() => router.replace("/profile")}
+          onClick={() => router.push("/profile")}
         />
       </section>
     </>
