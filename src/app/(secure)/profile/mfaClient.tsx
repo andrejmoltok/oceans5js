@@ -15,48 +15,46 @@ import RemoveSecret from "@/actions/mfa/disable/removeSecret";
 
 import styles from "@/styles/mfa.module.css";
 import clsx from "clsx";
-import MFASetupCheck from "@/actions/mfa/mfaSetupCheck";
 import { useCheckStore } from "@/lib/zustand/store/checkStore";
+import { useCheckBoxStore } from "@/lib/zustand/store/checkboxStore";
 import { useUserStore } from "@/lib/zustand/store/userStore";
 
-export default function MFAClient({ fetchedUser }: { fetchedUser: User }) {
-  const [mfaComplete, setMFAComplete] = React.useState<boolean>(false);
-  const [mfaCheckBox, setMFACheckBox] = React.useState<boolean>(false);
+export default function MFAClient({ user }: { user: User }) {
   const [disable, setDisable] = React.useState<boolean>(false);
-  const { check, setNeedCheck } = useCheckStore();
+  const { checkbox, toggleCheckBox, mfaEnabled } = useCheckBoxStore();
+  const { check, needCheck, fetchMFAComplete, setNeedCheck } = useCheckStore();
   const { setNeedRefetch } = useUserStore();
 
   React.useEffect(() => {
-    setMFACheckBox(fetchedUser?.mfaEnabled);
-  }, [fetchedUser]);
-
-  React.useEffect(() => {
-    (async () => {
-      const setupCheck: boolean = await MFASetupCheck();
-      setMFAComplete(setupCheck as boolean);
-    })();
-  }, []);
+    fetchMFAComplete();
+  }, [fetchMFAComplete, needCheck]);
 
   const mfaToggle = async (id: number, setting: boolean) => {
     await Switch(id, setting);
   };
 
-  const handleMFAToggle = React.useCallback(async () => {
-    if (mfaCheckBox) {
-      setDisable(true);
-    } else {
-      await mfaToggle(fetchedUser?.id as number, !mfaCheckBox);
-      setMFACheckBox(!mfaCheckBox);
-
-      console.log("checkbox", !mfaCheckBox);
+  React.useEffect(() => {
+    async function ToggleDB() {
+      if (checkbox === true) {
+        await mfaToggle(user?.id as number, true);
+        setDisable(false);
+        setNeedCheck(true);
+        setNeedRefetch(true);
+      } else {
+        await mfaToggle(user?.id as number, false);
+        setDisable(true);
+        setNeedCheck(true);
+        setNeedRefetch(true);
+      }
     }
-  }, [fetchedUser, mfaCheckBox]);
+    ToggleDB();
+  }, [user, checkbox, toggleCheckBox, setNeedCheck, setNeedRefetch]);
 
   React.useEffect(() => {
-    if (mfaCheckBox === true && mfaComplete === false) {
-      redirect(`/profile/mfa?email=${fetchedUser?.email}`);
+    if (checkbox === true && check === false) {
+      redirect(`/profile/mfa?email=${user?.email}`);
     }
-  }, [mfaCheckBox, mfaComplete, fetchedUser?.email]);
+  }, [check, checkbox, user]);
 
   const [validPassError, setValidPassError] = React.useState<string>("");
 
@@ -64,21 +62,21 @@ export default function MFAClient({ fetchedUser }: { fetchedUser: User }) {
     const validatePass = await ValidPass(passwordData);
 
     if (validatePass.success) {
-      await mfaToggle(fetchedUser?.id as number, false);
-      setMFACheckBox(false);
+      await mfaToggle(user?.id as number, false);
+      toggleCheckBox(false);
       setDisable(false);
       await RemoveSecret();
     } else {
-      setValidPassError(validatePass.error as string);
-      setMFACheckBox(true);
+      toggleCheckBox(true);
       setDisable(true);
+      setValidPassError(validatePass.error as string);
     }
   };
 
   if (disable) {
     return (
       <Disable
-        setMFACheckBox={setMFACheckBox}
+        setMFACheckBox={mfaEnabled}
         setDisable={setDisable}
         handleDisableSubmit={handleDisableSubmit}
         validPassError={validPassError}
@@ -90,16 +88,14 @@ export default function MFAClient({ fetchedUser }: { fetchedUser: User }) {
   return (
     <section>
       Multi-Factor Authentication:{" "}
-      {!mfaCheckBox && <span className={styles.disabled}>Disabled </span>}
-      {mfaCheckBox && <span className={styles.enabled}>Enabled </span>}
+      {checkbox === false && <span className={styles.disabled}>Disabled </span>}
+      {checkbox === true && <span className={styles.enabled}>Enabled </span>}
       <label className={styles.switch}>
         <input
           id="switch"
           type="checkbox"
-          checked={mfaCheckBox}
-          onChange={() => {
-            handleMFAToggle();
-          }}
+          checked={checkbox}
+          onChange={(e) => toggleCheckBox(e.target.checked)}
         ></input>
         <span className={clsx([styles.slider, styles.round])}></span>
       </label>

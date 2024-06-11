@@ -1,28 +1,39 @@
 "use client";
 
 import React from "react";
-import Profile from "./profile";
-import { User } from "@/actions/user/user";
-import MFAClient from "./mfaClient";
-import { useCheckStore } from "@/lib/zustand/store/checkStore";
+import { useRouter } from "next/navigation";
 import { useUserStore } from "@/lib/zustand/store/userStore";
+import LogoutAction from "@/actions/signoff/logoutAction";
+import MFAClient from "./mfaClient";
 
 export default function Page() {
-  // const { check, needCheck, fetchMFAComplete } = useCheckStore();
+  const router = useRouter();
   const { user, needRefetch, fetchUserData } = useUserStore();
-
   React.useEffect(() => {
     fetchUserData();
   }, [fetchUserData, needRefetch]);
 
-  // React.useEffect(() => {
-  //   fetchMFAComplete();
-  // }, [fetchMFAComplete, needCheck]);
+  user === null && <>{router.replace("/signin")}</>;
+
   return (
     <>
-      <Profile data={user as User}>
-        <MFAClient fetchedUser={user as User} />
-      </Profile>
+      <section>
+        <p>
+          username: <span>{user?.username}</span>
+        </p>
+        <p>
+          firstname: <span>{user?.firstname}</span>
+        </p>
+        <MFAClient user={user} />
+        <input
+          type="button"
+          value="Log Out"
+          onClick={async () => {
+            await LogoutAction();
+            router.replace("/");
+          }}
+        />
+      </section>
     </>
   );
 }

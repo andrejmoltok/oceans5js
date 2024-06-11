@@ -1,10 +1,13 @@
 "use client";
 
+//TODO - https://oceans5cn.atlassian.net/browse/O5T-23?focusedCommentId=10024
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import SetupCheck from "@/actions/mfa/setupCheckClient";
+import { useCheckStore } from "@/lib/zustand/store/checkStore";
+
 import styles from "@/styles/mfasetup.module.css";
 
 import TOTP from "./totp";
@@ -18,6 +21,7 @@ export default function Page({
   searchParams: { email: string };
 }) {
   const router = useRouter();
+  const { check } = useCheckStore();
   const [dataURL, setDataURL] = React.useState<string>("");
   const [otpAuthURLError, setOTPAuthURLError] = React.useState<string>("");
   const [secret, setSecret] = React.useState<{
@@ -27,14 +31,10 @@ export default function Page({
   }>();
 
   React.useEffect(() => {
-    async function Check() {
-      const check = await SetupCheck();
-      if (check) {
-        router.push("/profile");
-      }
+    if (check) {
+      router.push("/profile");
     }
-    Check();
-  }, [router]);
+  }, [router, check]);
 
   React.useEffect(() => {
     const newSecret = twofactor.generateSecret({

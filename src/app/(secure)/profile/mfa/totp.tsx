@@ -7,6 +7,7 @@ import MFASetup from "@/actions/mfa/mfaSetup";
 import styles from "@/styles/totp.module.css";
 import Icon from "@mdi/react";
 import { mdiLoading, mdiCheck } from "@mdi/js";
+import { Secret } from "@/lib/mfa/secret";
 
 export default function TOTP({
   secret,
@@ -29,8 +30,14 @@ export default function TOTP({
     const newValues = [...values];
     newValues[index] = e.target.value;
 
-    if (e.target.value && index < 5) {
-      inputsRef.current[index + 1]?.focus();
+    if (/^\d*$/.test(e.target.value)) {
+      setSuccessMessage("");
+      if (e.target.value && index < 5) {
+        inputsRef.current[index + 1]?.focus();
+      }
+    } else {
+      setValues(Array(6).fill(""));
+      setSuccessMessage("Only numbers are allowed");
     }
 
     setValues(newValues);
@@ -60,7 +67,7 @@ export default function TOTP({
       if (verifySecret) {
         const setup = await MFASetup({
           input: values,
-          secret: `${secret?.secret}`,
+          secret: secret as Secret,
         });
         if (setup?.success === true) {
           setVerifySuccess(true);
@@ -74,7 +81,7 @@ export default function TOTP({
       }
     }
     Verify();
-  }, [verifySecret, values, secret?.secret]);
+  }, [verifySecret, values, secret]);
 
   return (
     <>
@@ -86,6 +93,8 @@ export default function TOTP({
               type="text"
               maxLength={1}
               value={value}
+              pattern="\d*"
+              inputMode="numeric"
               onChange={(e) => handleChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               ref={(node) => {

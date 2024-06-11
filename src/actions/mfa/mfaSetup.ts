@@ -10,7 +10,7 @@ export default async function MFASetup({
   secret,
 }: {
   input: string[];
-  secret: string;
+  secret: { secret: string; uri: string; qr: string };
 }) {
   try {
     const cookieStore = cookies();
@@ -20,12 +20,12 @@ export default async function MFASetup({
       Iron.defaults
     );
     const sealedSecret = await Iron.seal(
-      `${secret}`,
+      secret,
       process.env.IRONPASS as string,
       Iron.defaults
     );
     const verified: { delta: number } = twofactor.verifyToken(
-      `${secret}`,
+      `${secret?.secret}`,
       `${input.join("")}`
     );
 

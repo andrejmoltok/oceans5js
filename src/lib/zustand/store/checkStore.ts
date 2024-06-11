@@ -13,7 +13,7 @@ export const useCheckStore = create<CheckStore>((set) => ({
   needCheck: false,
   fetchMFAComplete: async () => {
     const check = await MFASetupCheck();
-    set({ check, needCheck: false });
+    set(() => ({ check: check, needCheck: false }));
   },
   setNeedCheck: (value: boolean) => set({ needCheck: value }),
 }));

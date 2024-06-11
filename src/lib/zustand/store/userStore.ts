@@ -14,7 +14,7 @@ export const useUserStore = create<UserStore>((set) => ({
   needRefetch: false,
   fetchUserData: async () => {
     const user = await FetchUser();
-    set({ user, needRefetch: false });
+    set((state) => ({ user: (state.user = user), needRefetch: false }));
   },
   setNeedRefetch: (value: boolean) => set({ needRefetch: value }),
 }));

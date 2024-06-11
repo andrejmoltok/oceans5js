@@ -18,7 +18,7 @@ export default function Disable({
   validPassError,
   setValidPassError,
 }: {
-  setMFACheckBox: Dispatch<SetStateAction<boolean>>;
+  setMFACheckBox: (value: boolean) => void;
   setDisable: Dispatch<SetStateAction<boolean>>;
   validPassError: string;
   setValidPassError: Dispatch<SetStateAction<string>>;

@@ -26,8 +26,14 @@ export default function TOTP() {
     const newValues = [...values];
     newValues[index] = e.target.value;
 
-    if (e.target.value && index < 5) {
-      inputsRef.current[index + 1]?.focus();
+    if (/^\d*$/.test(e.target.value)) {
+      setSuccessMessage("");
+      if (e.target.value && index < 5) {
+        inputsRef.current[index + 1]?.focus();
+      }
+    } else {
+      setValues(Array(6).fill(""));
+      setSuccessMessage("Only numbers are allowed");
     }
 
     setValues(newValues);

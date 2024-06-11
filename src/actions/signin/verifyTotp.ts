@@ -32,7 +32,7 @@ export default async function VerifyTOTP(input: string[]) {
       );
       // verify code input against unsealed secret_base32
       const verified: { delta: number } = twofactor.verifyToken(
-        `${unsealedSecret}`,
+        `${unsealedSecret.secret}`,
         `${input.join("")}`
       );
       if (verified.delta === 0) {
