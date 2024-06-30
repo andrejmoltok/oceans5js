@@ -7,16 +7,9 @@
 3. [MySQL](https://www.msql.com)
 4. [Prisma](https://prisma.io)
 5. [Zod](https://zod.dev)
-6. [BCryptJS](https://www.npmjs.com/package/bcryptjs)
-7. [NanoID](https://www.npmjs.com/package/nanoid)
-8. [HAPI/IRON](https://hapi.dev/module/iron/)
-9. [Socket.IO](https://socket.io/)
-10. [EgoJS](https://github.com/oguzeroglu/Ego)
-11. [Material Design Icons(MDI)](https://pictogrammers.com/library/mdi/)
-12. [Node-2FA](https://www.npmjs.com/package/node-2fa)
-13. [EmailJS](https://emailjs.com) - REPLACE THIS WITH [LOOPS.SO](https://loops.so/) AFTER DOMAIN REGISTRATION
-14. [Cron](https://www.npmjs.com/package/cron)
-15. [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
+6. [Socket.IO](https://socket.io/)
+7. [EgoJS](https://github.com/oguzeroglu/Ego)
+8. [Material Design Icons(MDI)](https://pictogrammers.com/library/mdi/)
 
 _right-click the links to open in new tab_
 

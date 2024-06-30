@@ -9,35 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emailjs/nodejs": "^2.2.0",
-    "@hapi/iron": "^7.0.1",
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
     "@oguz.eroglu/ego-js": "^1.1.0",
-    "@prisma/client": "^5.14.0",
-    "bcryptjs": "^2.4.3",
-    "clsx": "^2.1.1",
-    "cron": "^3.1.7",
-    "nanoid": "^5.0.6",
-    "next": "^14.2.3",
-    "node-2fa": "^2.0.3",
-    "public-ip": "^6.0.2",
-    "qrcode": "^1.5.3",
+    "@prisma/client": "^5.16.1",
+    "next": "^14.2.4",
     "react": "^18.3.1",
     "react-dnd-multi-backend": "^8.0.3",
     "react-dom": "^18.3.1",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
-    "zod": "^3.22.4",
-    "zustand": "^4.5.2"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "@types/react": "^18.2.72",
-    "@types/react-dom": "^18.2.22",
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.1.4",
-    "prisma": "^5.14.0",
-    "typescript": "^5.4.3"
+    "prisma": "^5.16.1",
+    "typescript": "^5.5.2"
   }
 }
